@@ -1,5 +1,9 @@
 package at.tfro.sonic_link
 
+import at.tfro.sonic_link.db.DatabaseFactory
+import at.tfro.sonic_link.db.dao.ArtistDAO
+import at.tfro.sonic_link.db.dao.MediaDAO
+import at.tfro.sonic_link.db.dao.MediaDTO
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
@@ -14,7 +18,24 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
 import java.io.File
 
-fun main(args: Array<String>) = EngineMain.main(args)
+fun main(args: Array<String>) {
+    EngineMain.main(args)
+
+    DatabaseFactory.initH2()
+    ArtistDAO.create(
+        name = "Toto",
+        path = "media/toto/",
+        art = null,
+    )
+
+    MediaDAO.create(
+        name = "Afrika",
+        path = "media/africa.mp3",
+        mediaType = MediaDTO.MediaType.AUDIO,
+        albumId = null,
+        artistIds = listOf(1),
+    )
+}
 
 
 fun Application.module() {
@@ -60,48 +81,6 @@ fun Application.module() {
                     }
                 }
             } else {
-                call.respondFile(file)
-            }
-        }
-
-        get("/stream/{filename}") {
-            val filename = call.parameters["filename"]
-                ?: return@get call.respond(HttpStatusCode.BadRequest, "Missing filename")
-            val file = File(mediaFolder, filename)
-
-            if (!file.exists()) {
-                return@get call.respond(HttpStatusCode.NotFound, "File not found")
-            }
-
-            val rangeHeader = call.request.headers["Range"]
-            val fileSize = file.length()
-
-            if (rangeHeader != null && rangeHeader.startsWith("bytes=")) {
-                val (startStr, endStr) = rangeHeader.removePrefix("bytes=").split("-").let {
-                    it[0] to it.getOrNull(1)
-                }
-
-                val start = startStr.toLongOrNull() ?: 0
-                val end = endStr?.toLongOrNull()?.coerceAtMost(fileSize - 1) ?: (fileSize - 1)
-                val contentLength = (end - start + 1).coerceAtLeast(0)
-
-                if (start >= fileSize || end >= fileSize || start > end) {
-                    return@get call.respond(HttpStatusCode.RequestedRangeNotSatisfiable)
-                }
-
-                call.response.status(HttpStatusCode.PartialContent)
-                call.response.header(HttpHeaders.AcceptRanges, "bytes")
-                call.response.header(HttpHeaders.ContentLength, contentLength.toString())
-                call.response.header(HttpHeaders.ContentRange, "bytes $start-$end/$fileSize")
-
-                call.respondOutputStream(contentType = ContentType.defaultForFile(file)) {
-                    file.inputStream().use {
-                        it.skip(start)
-                        it.copyTo(this, contentLength.toInt())
-                    }
-                }
-            } else {
-                // No range header – send entire file
                 call.respondFile(file)
             }
         }
