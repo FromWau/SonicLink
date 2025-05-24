@@ -6,13 +6,13 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
 
-fun Application.configureRouting(mediaFolder: String, triageFolder: String) {
+fun Application.configureRouting() {
     routing {
         get("/") {
             call.respond(HttpStatusCode.OK, "OK")
         }
-        triageRoutes(triageFolder)
-        streamRoutes(mediaFolder)
-        mediaRoutes(mediaFolder)
+        triageRoutes()
+        streamRoutes()
+        mediaRoutes()
     }
 }

@@ -1,5 +1,6 @@
 package at.tfro.sonic_link.api.routes
 
+import at.tfro.sonic_link.ServerSettings
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
@@ -12,11 +13,11 @@ import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
 import java.io.File
 
-fun Route.streamRoutes(mediaFolder: String) {
+fun Route.streamRoutes() {
     get("/stream/{filename}") {
         val filename = call.parameters["filename"]
             ?: return@get call.respond(HttpStatusCode.BadRequest, "Missing filename")
-        val file = File(mediaFolder, filename)
+        val file = File(ServerSettings.libraryFolder, filename)
 
         if (!file.exists()) {
             return@get call.respond(HttpStatusCode.NotFound, "File not found")

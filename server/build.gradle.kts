@@ -19,6 +19,8 @@ dependencies {
     implementation(projects.interim)
 
     implementation(libs.logback)
+    implementation(libs.slf4j)
+
     implementation(libs.ktor.server.core)
     implementation(libs.ktor.server.netty)
     implementation(libs.ktor.server.content.negotiation)
@@ -33,6 +35,8 @@ dependencies {
     implementation(libs.koin.core)
     implementation(libs.koin.ktor)
     implementation(libs.koin.logger.slf4j)
+
+    implementation(libs.typesafeConfig)
 
     implementation(libs.room.runtime)
     ksp(libs.room.compiler)
