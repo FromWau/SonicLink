@@ -1,14 +1,15 @@
 package at.tfro.sonic_link.api.routes
 
-import at.tfro.sonic_link.Log
-import at.tfro.sonic_link.features.importer.ImportMedia
 import at.tfro.sonic_link.features.importer.Importer
+import at.tfro.sonic_link.features.importer.TriageMedia
+import at.tfro.sonic_link.features.musicbrainz_api.MusicbrainzApi
+import at.tfro.sonic_link.features.musicbrainz_api.Recording
 import io.ktor.http.HttpStatusCode
-import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
-import org.slf4j.helpers.Reporter
+import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.Serializable
 
 fun Route.triageRoutes() {
     get("/triage") {
@@ -18,16 +19,32 @@ fun Route.triageRoutes() {
     }
 
     get("/triage/import") {
-        val media = ImportMedia(
-            path = "sample_artist/sample_album/sample.mp3",
-            type = ImportMedia.MediaType.AUDIO,
-            title = "Test Title",
-            artist = "Test Artist",
-            album = "Test Album"
-        )
-        Log.i { "Build media object to be requested for import" }
-        Importer().import(media)
+        val possibleMappings: List<PossibleMappings> = Importer().importAble()
+            .map { triageMedia ->
+                runBlocking {
+                    val mappings = MusicbrainzApi.search(
+                        recording = triageMedia.possibleTitle,
+                        album = triageMedia.possibleAlbum,
+                        artist = triageMedia.possibleArtist
+                    ).recordings
 
-        call.respond(HttpStatusCode.OK)
+                    PossibleMappings(triageMedia, mappings)
+                }
+            }
+            .toList()
+
+        call.respond(HttpStatusCode.OK, possibleMappings)
     }
 }
+
+@Serializable
+data class PossibleMappings(
+    val triageMedia: TriageMedia,
+    val mappings: List<Recording>,
+)
+
+@Serializable
+data class MappingRequest(
+    val triageMedia: TriageMedia,
+    val recording: Recording,
+)

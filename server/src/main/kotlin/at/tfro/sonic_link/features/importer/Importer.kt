@@ -6,32 +6,28 @@ import kotlinx.serialization.Serializable
 import java.io.File
 
 class Importer {
-    fun importAble(): Sequence<ImportMedia> {
+    fun importAble(): Sequence<TriageMedia> {
         val folder = ServerSettings.triageFolder
 
-        return folder.walk()
-            .filter { it.isFile }
-            .map { file ->
-                val mediaType: ImportMedia.MediaType = ImportMedia.MediaType.fromFile(file)
-                val parentPath = file.parentFile.relativeTo(folder).path
+        return folder.walk().filter { it.isFile }.map { file ->
+                val parentPaths = file.parentFile.relativeTo(folder).path.split("/")
 
-                val parentPaths = parentPath.split("/")
-                val possibleArtist = parentPaths.getOrNull(0) ?: ""
-                val possibleAlbum = parentPaths.getOrNull(1) ?: ""
-                val possibleTitle = parentPaths.getOrNull(2) ?: file.name
+                val possibleArtist: String = parentPaths.getOrElse(0) { "" }
+                val possibleAlbum: String = parentPaths.getOrElse(1) { "" }
+                val possibleTitle: String = parentPaths.getOrElse(2) { file.nameWithoutExtension }
 
-                val media = ImportMedia(
-                    path = parentPath,
-                    type = mediaType,
-                    title = possibleTitle,
-                    artist = possibleArtist,
-                    album = possibleAlbum,
+
+                val media = TriageMedia(
+                    path = file.relativeTo(folder).path,
+                    possibleTitle = normalizeNaming(possibleTitle),
+                    possibleAlbum = normalizeNaming(possibleAlbum),
+                    possibleArtist = normalizeNaming(possibleArtist),
                 )
                 return@map media
             }
     }
 
-    fun import(media: ImportMedia) {
+    fun import(media: TriageMedia) {
         val folder = ServerSettings.triageFolder
         val file = File(folder, media.path)
         if (!file.exists()) {
@@ -43,28 +39,21 @@ class Importer {
 }
 
 @Serializable
-data class ImportMedia(
+data class TriageMedia(
     val path: String,
-    val type: MediaType,
-    val title: String,
-    val album: String,
-    val artist: String,
-) {
-    @Serializable
-    enum class MediaType {
-        AUDIO,
-        VIDEO,
-        UNKNOWN,
-        ;
+    val possibleTitle: String,
+    val possibleAlbum: String,
+    val possibleArtist: String,
+)
 
-        companion object {
-            fun fromFile(file: File): MediaType {
-                return when (file.extension.lowercase()) {
-                    "mp3", "flac", "wav" -> AUDIO
-                    "mp4", "mkv", "avi" -> VIDEO
-                    else -> UNKNOWN
-                }
-            }
-        }
-    }
+fun normalizeNaming(raw: String): String {
+    var title = raw
+
+    // Snake case to spaced
+    title = title.split('_').joinToString(" ") { it.replaceFirstChar { c -> c.uppercase() } }
+
+    // CamelCase to spaced
+    title = title.replace(Regex("([a-z])([A-Z])"), "$1 $2").replaceFirstChar { it.uppercase() }
+
+    return title
 }
