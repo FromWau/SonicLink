@@ -56,6 +56,7 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.koin.android)
         }
         commonMain.dependencies {
             implementation(projects.shared)
@@ -73,7 +74,7 @@ android {
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "at.fro.sonic_link"
+        applicationId = "at.tfro.sonic_link"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
@@ -101,11 +102,11 @@ dependencies {
 
 compose.desktop {
     application {
-        mainClass = "at.fro.sonic_link.MainKt"
+        mainClass = "at.tfro.sonic_link.MainKt"
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "at.fro.sonic_link"
+            packageName = "at.tfro.sonic_link"
             packageVersion = "1.0.0"
         }
     }
