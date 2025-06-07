@@ -7,7 +7,7 @@ plugins {
     application
 }
 
-group = "at.fro.sonic_link"
+group = "at.tfro.sonic_link"
 version = "1.0.0"
 application {
     mainClass.set("io.ktor.server.netty.EngineMain")
