@@ -1,4 +1,4 @@
-package at.tfro.sonic_link.library.presentation.music_list
+package at.tfro.sonic_link.library.presentation
 
 import at.tfro.sonic_link.core.presentation.StringValue
 import at.tfro.sonic_link.library.domain.Music

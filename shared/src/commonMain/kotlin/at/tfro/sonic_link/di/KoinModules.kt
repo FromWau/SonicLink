@@ -1,6 +1,7 @@
 package at.tfro.sonic_link.di
 
-import at.tfro.sonic_link.importer.presentation.importer.ImporterViewmodel
+import at.tfro.sonic_link.importer.presentation.ImporterViewModel
+import at.tfro.sonic_link.library.presentation.MusicListViewModel
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModelOf
@@ -17,5 +18,6 @@ fun initKoin(config: KoinAppDeclaration? = null) {
 }
 
 val sharedModules = module {
-    viewModelOf(::ImporterViewmodel)
+    viewModelOf(::ImporterViewModel)
+    viewModelOf(::MusicListViewModel)
 }

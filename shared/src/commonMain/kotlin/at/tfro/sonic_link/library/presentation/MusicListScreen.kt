@@ -1,4 +1,4 @@
-package at.tfro.sonic_link.library.presentation.music_list
+package at.tfro.sonic_link.library.presentation
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,18 +15,26 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import at.tfro.sonic_link.Permission
 import at.tfro.sonic_link.RequestPermission
-import at.tfro.sonic_link.library.presentation.music_list.components.MusicList
+import at.tfro.sonic_link.library.presentation.components.MusicList
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun MusicListScreenRoot(
-    viewModel: MusicListViewModel,
+    viewModel: MusicListViewModel = koinViewModel<MusicListViewModel>(),
     onBack: () -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     MusicListScreen(
         state = state,
-        onAction = viewModel::onAction,
+        onAction = { action ->
+            when (action) {
+                is MusicListAction.OnBack -> onBack()
+                else -> Unit
+            }
+
+            viewModel.onAction(action)
+        },
     )
 }
 
@@ -46,7 +54,7 @@ fun MusicListScreen(
     RequestPermission(
         permission = Permission.NETWORK,
     ) {
-       println("Requesting permission")
+        println("Requesting permission")
     }
 
     Column(

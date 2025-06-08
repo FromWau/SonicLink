@@ -1,4 +1,4 @@
-package at.tfro.sonic_link.library.presentation.music_list.components
+package at.tfro.sonic_link.library.presentation.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxWidth

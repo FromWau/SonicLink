@@ -1,4 +1,4 @@
-package at.tfro.sonic_link.library.presentation.music_list
+package at.tfro.sonic_link.library.presentation
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,6 +11,10 @@ class MusicListViewModel : ViewModel() {
     fun onAction(action: MusicListAction) {
         when (action) {
             is MusicListAction.OnMusicClick -> {
+
+            }
+
+            MusicListAction.OnBack -> {
 
             }
         }
