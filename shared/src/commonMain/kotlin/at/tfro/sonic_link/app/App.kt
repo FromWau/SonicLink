@@ -12,8 +12,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import at.tfro.sonic_link.home.presentation.HomeScreenRoot
 import at.tfro.sonic_link.importer.presentation.ImporterScreenRoot
-import at.tfro.sonic_link.library.presentation.MusicListScreenRoot
+import at.tfro.sonic_link.library.presentation.LibraryScreenRoot
 import at.tfro.sonic_link.theme.AppTheme
 
 
@@ -38,15 +39,24 @@ fun App() {
                     navigation<Route.Graph>(
                         startDestination = Route.Importer,
                     ) {
-                        composable<Route.MusicList> {
-                            MusicListScreenRoot(
+                        composable<Route.Home> {
+                            HomeScreenRoot(
                                 onBack = navController::navigateUp,
+                                onNav = navController::navigate,
+                            )
+                        }
+
+                        composable<Route.Library> {
+                            LibraryScreenRoot(
+                                onBack = navController::navigateUp,
+                                onNav = navController::navigate,
                             )
                         }
 
                         composable<Route.Importer> {
                             ImporterScreenRoot(
                                 onBack = navController::navigateUp,
+                                onNav = navController::navigate,
                             )
                         }
                     }

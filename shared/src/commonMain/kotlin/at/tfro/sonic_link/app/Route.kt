@@ -8,8 +8,11 @@ sealed interface Route {
     data object Graph : Route
 
     @Serializable
+    data object Home : Route
+
+    @Serializable
     data object Importer : Route
 
     @Serializable
-    data object MusicList : Route
+    data object Library : Route
 }

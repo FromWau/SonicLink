@@ -3,7 +3,7 @@ package at.tfro.sonic_link.library.presentation
 import at.tfro.sonic_link.core.presentation.StringValue
 import at.tfro.sonic_link.library.domain.Music
 
-data class MusicListState(
+data class LibraryState(
     val isLoading: Boolean = false,
     val errorMessage: StringValue? = null,
     val musicList: List<Music> = listOf(

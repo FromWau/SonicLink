@@ -1,6 +1,6 @@
 package at.tfro.sonic_link.importer.presentation
 
-import at.tfro.sonic_link.importer.domain.ImportMedia
+import at.tfro.sonic_link.importer.domain.model.ImportMedia
 
 sealed interface ImporterAction {
     data class OnImportableMediaSelected(val media: ImportMedia) : ImporterAction

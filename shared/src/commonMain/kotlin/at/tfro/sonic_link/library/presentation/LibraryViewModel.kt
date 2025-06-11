@@ -4,17 +4,17 @@ import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-class MusicListViewModel : ViewModel() {
-    private val _state: MutableStateFlow<MusicListState> = MutableStateFlow(MusicListState())
+class LibraryViewModel : ViewModel() {
+    private val _state: MutableStateFlow<LibraryState> = MutableStateFlow(LibraryState())
     val state = _state.asStateFlow()
 
-    fun onAction(action: MusicListAction) {
+    fun onAction(action: LibraryAction) {
         when (action) {
-            is MusicListAction.OnMusicClick -> {
+            is LibraryAction.OnMusicClick -> {
 
             }
 
-            MusicListAction.OnBack -> {
+            LibraryAction.OnBack -> {
 
             }
         }

@@ -1,4 +1,4 @@
-package at.tfro.sonic_link.importer.domain
+package at.tfro.sonic_link.importer.domain.model
 
 data class ImportMedia(
     val path: String,
