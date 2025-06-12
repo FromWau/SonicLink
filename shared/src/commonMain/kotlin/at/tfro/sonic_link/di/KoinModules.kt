@@ -1,6 +1,10 @@
 package at.tfro.sonic_link.di
 
 import at.tfro.sonic_link.core.data.HttpClientFactory
+import at.tfro.sonic_link.core.data.data_source.SettingsDataSource
+import at.tfro.sonic_link.core.data.data_source.SettingsDataSourceImpl
+import at.tfro.sonic_link.core.data.repository.SettingsRepositoryImpl
+import at.tfro.sonic_link.core.domain.repository.SettingsRepository
 import at.tfro.sonic_link.home.presentation.HomeViewModel
 import at.tfro.sonic_link.importer.data.data_source.ImporterDataSource
 import at.tfro.sonic_link.importer.data.data_source.ImporterRemoteDataSourceImpl
@@ -35,4 +39,7 @@ val sharedModules = module {
     singleOf(::ImporterApiClient)
     singleOf(::ImporterRemoteDataSourceImpl).bind<ImporterDataSource>()
     singleOf(::ImporterRepositoryImpl).bind<ImporterRepository>()
+
+    singleOf(::SettingsRepositoryImpl).bind<SettingsRepository>()
+    singleOf(::SettingsDataSourceImpl).bind<SettingsDataSource>()
 }

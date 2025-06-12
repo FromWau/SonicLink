@@ -12,4 +12,8 @@ enum class DrawerDestination(val label: StringValue, val route: Route) {
         route = Route.Importer,
         label = StringValue.HardCoded("Importer")
     ),
+    Settings(
+        route = Route.Settings,
+        label = StringValue.HardCoded("Settings")
+    ),
 }

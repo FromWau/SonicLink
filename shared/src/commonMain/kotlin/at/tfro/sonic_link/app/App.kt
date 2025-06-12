@@ -15,6 +15,7 @@ import androidx.navigation.compose.rememberNavController
 import at.tfro.sonic_link.home.presentation.HomeScreenRoot
 import at.tfro.sonic_link.importer.presentation.ImporterScreenRoot
 import at.tfro.sonic_link.library.presentation.LibraryScreenRoot
+import at.tfro.sonic_link.settings.presentation.SettingsScreenRoot
 import at.tfro.sonic_link.theme.AppTheme
 
 
@@ -29,7 +30,6 @@ fun App() {
                 modifier = Modifier.fillMaxSize().statusBarsPadding(),
                 contentAlignment = Alignment.Center
             ) {
-
                 val navController = rememberNavController()
 
                 NavHost(
@@ -55,6 +55,13 @@ fun App() {
 
                         composable<Route.Importer> {
                             ImporterScreenRoot(
+                                onBack = navController::navigateUp,
+                                onNav = navController::navigate,
+                            )
+                        }
+
+                        composable<Route.Settings> {
+                            SettingsScreenRoot(
                                 onBack = navController::navigateUp,
                                 onNav = navController::navigate,
                             )

@@ -2,7 +2,6 @@ package at.tfro.sonic_link.importer.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import at.tfro.sonic_link.importer.domain.model.ImportMedia
 import at.tfro.sonic_link.importer.domain.repository.ImporterRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,20 +16,11 @@ class ImporterViewModel(
 
     init {
         viewModelScope.launch {
-            importerRepository.getAllImportableMedia()
-                .map {
-                    ImportMedia(
-                        path = it,
-                        title = "",
-                        album = "",
-                        artist = "",
-                    )
+            importerRepository.getAllImportableMedia().let { media ->
+                _state.update { current ->
+                    current.copy(mediaToImport = media, isLoading = false)
                 }
-                .let { media ->
-                    _state.update { current ->
-                        current.copy(mediaToImport = media, isLoading = false)
-                    }
-                }
+            }
         }
     }
 
