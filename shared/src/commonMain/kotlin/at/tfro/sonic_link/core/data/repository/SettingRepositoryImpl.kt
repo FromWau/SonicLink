@@ -12,7 +12,7 @@ class SettingRepositoryImpl(
     private val dao: SettingDao,
 ) : SettingRepository {
     override suspend fun upsert(setting: Setting) =
-        dao.upsert(setting.toSettingEntity())
+        dao.upsertSingleActive(setting.toSettingEntity())
 
     override fun getAllSettings(): Flow<List<Setting>> =
         dao.getAllSettings().map {
@@ -25,6 +25,6 @@ class SettingRepositoryImpl(
     override suspend fun getSettingById(id: Long): Setting? =
         dao.getSettingById(id)?.toDomain()
 
-    override suspend fun deleteSettingById(id: Long) =
-        dao.deleteSettingById(id)
+    override suspend fun delete(setting: Setting) =
+        dao.delete(setting.toSettingEntity())
 }

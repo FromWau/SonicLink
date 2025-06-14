@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import at.tfro.sonic_link.core.domain.model.Setting
 import at.tfro.sonic_link.home.presentation.HomeScreen
 import at.tfro.sonic_link.home.presentation.HomeState
 import at.tfro.sonic_link.importer.presentation.ImporterScreen
@@ -40,7 +41,7 @@ private fun PreviewContainer(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(device = "id:pixel_7_pro")
 @Composable
 private fun Home_Preview() {
     PreviewContainer {
@@ -54,7 +55,7 @@ private fun Home_Preview() {
     }
 }
 
-@Preview(showBackground = true)
+@Preview(device = "id:pixel_7_pro")
 @Composable
 private fun Importer_Preview() {
     PreviewContainer {
@@ -68,7 +69,7 @@ private fun Importer_Preview() {
     }
 }
 
-@Preview(showBackground = true)
+@Preview(device = "id:pixel_7_pro")
 @Composable
 private fun Library_Preview() {
     PreviewContainer {
@@ -82,9 +83,9 @@ private fun Library_Preview() {
     }
 }
 
-@Preview(showBackground = true)
+@Preview(device = "id:pixel_7_pro")
 @Composable
-private fun Settings_Preview() {
+private fun Settings_Preview_empty() {
     PreviewContainer {
         val state = SettingsState()
 
@@ -96,3 +97,29 @@ private fun Settings_Preview() {
     }
 }
 
+@Preview(device = "id:pixel_7_pro")
+@Composable
+private fun Settings_Preview_not_empty() {
+    PreviewContainer {
+        val state = SettingsState(
+            settings = listOf(
+                Setting(
+                    id = 0,
+                    host = "example1.com",
+                    isActive = false,
+                ),
+                Setting(
+                    id = 1,
+                    host = "example2.com",
+                    isActive = true,
+                ),
+            )
+        )
+
+        SettingsScreen(
+            state = state,
+            onAction = {},
+            onNav = {},
+        )
+    }
+}

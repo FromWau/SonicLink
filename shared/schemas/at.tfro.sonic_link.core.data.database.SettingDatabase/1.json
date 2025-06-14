@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "146e94d5d94822e4a429515e85287d61",
+    "identityHash": "00d7546e1f4fe7f07ae4ac68dca2f6b8",
     "entities": [
       {
         "tableName": "settings",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `baseUrl` TEXT NOT NULL, `isActive` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `host` TEXT NOT NULL, `isActive` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -15,8 +15,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "baseUrl",
-            "columnName": "baseUrl",
+            "fieldPath": "host",
+            "columnName": "host",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -37,7 +37,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '146e94d5d94822e4a429515e85287d61')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '00d7546e1f4fe7f07ae4ac68dca2f6b8')"
     ]
   }
 }

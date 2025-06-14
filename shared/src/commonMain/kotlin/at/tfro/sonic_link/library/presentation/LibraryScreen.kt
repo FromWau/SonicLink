@@ -19,7 +19,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import at.tfro.sonic_link.Permission
 import at.tfro.sonic_link.RequestPermission
 import at.tfro.sonic_link.app.Route
-import at.tfro.sonic_link.core.presentation.components.SideDrawer
+import at.tfro.sonic_link.core.presentation.side_drawer.SideDrawer
 import at.tfro.sonic_link.library.presentation.components.MusicList
 import org.koin.compose.viewmodel.koinViewModel
 

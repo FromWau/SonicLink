@@ -21,7 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import at.tfro.sonic_link.app.Route
-import at.tfro.sonic_link.core.presentation.components.SideDrawer
+import at.tfro.sonic_link.core.presentation.side_drawer.SideDrawer
 import at.tfro.sonic_link.core.presentation.side_drawer.toggle
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel

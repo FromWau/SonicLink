@@ -12,5 +12,5 @@ interface SettingRepository {
 
     suspend fun getSettingById(id: Long): Setting?
 
-    suspend fun deleteSettingById(id: Long)
+    suspend fun delete(setting: Setting)
 }

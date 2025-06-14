@@ -1,4 +1,4 @@
-package at.tfro.sonic_link.core.presentation.components
+package at.tfro.sonic_link.core.presentation.side_drawer
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -19,8 +19,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import at.tfro.sonic_link.app.Route
-import at.tfro.sonic_link.core.presentation.side_drawer.DrawerDestination
-import at.tfro.sonic_link.core.presentation.side_drawer.toggle
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -34,6 +32,7 @@ fun SideDrawer(
 ) {
     ModalNavigationDrawer(
         drawerState = drawerState,
+        gesturesEnabled = true,
         drawerContent = {
             ModalDrawerSheet {
                 Row(

@@ -23,7 +23,7 @@ class ImporterApiClient(
         println("Fetching importable media from the server...")
         return try {
             val response = httpClient.get {
-                url("${setting.baseUrl}/triage")
+                url("${setting.host}/triage")
             }
 
             if (response.status.isSuccess()) {

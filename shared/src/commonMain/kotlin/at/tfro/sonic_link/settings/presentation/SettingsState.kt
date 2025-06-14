@@ -1,7 +1,7 @@
 package at.tfro.sonic_link.settings.presentation
 
+import at.tfro.sonic_link.core.domain.model.Setting
+
 data class SettingsState(
-    val serverSettings: ServerSettings = ServerSettings(baseUrl = "")
-) {
-    data class ServerSettings(val baseUrl: String)
-}
+    val settings: List<Setting> = emptyList(),
+)

@@ -29,7 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import at.tfro.sonic_link.app.Route
-import at.tfro.sonic_link.core.presentation.components.SideDrawer
+import at.tfro.sonic_link.core.presentation.side_drawer.SideDrawer
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
