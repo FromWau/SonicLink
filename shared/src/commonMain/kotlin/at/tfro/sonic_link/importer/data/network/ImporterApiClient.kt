@@ -1,28 +1,29 @@
 package at.tfro.sonic_link.importer.data.network
 
-import at.tfro.sonic_link.core.domain.repository.SettingsRepository
+import at.tfro.sonic_link.core.domain.repository.SettingRepository
 import at.tfro.sonic_link.importer.data.model.PossibleMediaDto
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.url
 import io.ktor.http.isSuccess
+import kotlinx.coroutines.flow.firstOrNull
 
 class ImporterApiClient(
     private val httpClient: HttpClient,
-    private val settingsRepository: SettingsRepository,
+    private val settingRepository: SettingRepository,
 ) {
     suspend fun getAllImportableMedia(): List<PossibleMediaDto> {
-        val settings = settingsRepository.getSettings()
-        if (settings == null) {
-            println("Settings not found, cannot fetch importable media.")
+        val setting = settingRepository.getActiveSetting().firstOrNull() // TODO: is firstOrNull() the right choice here?
+        if (setting == null) {
+            println("Setting not found, cannot fetch importable media.")
             return emptyList()
         }
 
         println("Fetching importable media from the server...")
         return try {
             val response = httpClient.get {
-                url("${settings.serverSettings.baseUrl}/triage")
+                url("${setting.baseUrl}/triage")
             }
 
             if (response.status.isSuccess()) {

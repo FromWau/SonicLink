@@ -1,4 +1,4 @@
-package at.tfro.sonic_link.core.data
+package at.tfro.sonic_link.core.data.network
 
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
