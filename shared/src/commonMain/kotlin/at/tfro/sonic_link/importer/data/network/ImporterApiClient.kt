@@ -2,6 +2,11 @@ package at.tfro.sonic_link.importer.data.network
 
 import at.tfro.sonic_link.core.domain.repository.SettingRepository
 import at.tfro.sonic_link.importer.data.model.PossibleMediaDto
+import at.tfro.sonic_link.utils.Logger
+import at.tfro.sonic_link.utils.e
+import at.tfro.sonic_link.utils.i
+import at.tfro.sonic_link.utils.tag
+import at.tfro.sonic_link.utils.w
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
@@ -12,16 +17,22 @@ import kotlinx.coroutines.flow.firstOrNull
 class ImporterApiClient(
     private val httpClient: HttpClient,
     private val settingRepository: SettingRepository,
+    private val appLogger: Logger,
 ) {
+    companion object {
+        private const val LOG_TAG = "ImporterApiClient"
+    }
+
     suspend fun getAllImportableMedia(): List<PossibleMediaDto> {
-        val setting = settingRepository.getActiveSetting().firstOrNull() // TODO: is firstOrNull() the right choice here?
+        // TODO: is firstOrNull() the right choice here?
+        val setting = settingRepository.getActiveSetting().firstOrNull()
         if (setting == null) {
-            println("Setting not found, cannot fetch importable media.")
+            appLogger.tag(LOG_TAG).w { "Setting not found, cannot fetch importable media." }
             return emptyList()
         }
 
-        println("Fetching importable media from the server...")
-        return try {
+        appLogger.tag(LOG_TAG).i { "Fetching importable media from the server..." }
+        try {
             val response = httpClient.get {
                 url("${setting.host}/triage")
             }
@@ -29,12 +40,12 @@ class ImporterApiClient(
             if (response.status.isSuccess()) {
                 return response.body<List<PossibleMediaDto>>()
             } else {
-                println("Error fetching importable media: ${response.status}")
+                appLogger.tag(LOG_TAG).e { "Error fetching importable media: ${response.status}" }
                 return emptyList()
             }
         } catch (e: Exception) {
-            println("Network error: ${e.message}")
-            emptyList()
+            appLogger.tag(LOG_TAG).e(e)
+            return emptyList()
         }
     }
 }
