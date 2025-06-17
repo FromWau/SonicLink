@@ -9,7 +9,7 @@ enum class DrawerDestination(val label: StringValue, val route: Route) {
         label = StringValue.HardCoded("Library")
     ),
     Importer(
-        route = Route.Importer,
+        route = Route.Import.ImportList,
         label = StringValue.HardCoded("Importer")
     ),
     Settings(

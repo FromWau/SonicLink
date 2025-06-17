@@ -12,7 +12,7 @@ import at.tfro.sonic_link.importer.data.data_source.ImporterRemoteDataSourceImpl
 import at.tfro.sonic_link.importer.data.network.ImporterApiClient
 import at.tfro.sonic_link.importer.data.repository.ImporterRepositoryImpl
 import at.tfro.sonic_link.importer.domain.repository.ImporterRepository
-import at.tfro.sonic_link.importer.presentation.ImporterViewModel
+import at.tfro.sonic_link.importer.presentation.importer_list.ImportListViewModel
 import at.tfro.sonic_link.library.presentation.LibraryViewModel
 import at.tfro.sonic_link.settings.presentation.SettingsViewModel
 import at.tfro.sonic_link.utils.DebugLogger
@@ -45,7 +45,7 @@ val sharedModules = module {
 }
 
 val viewModelModules = module {
-    viewModelOf(::ImporterViewModel)
+    viewModelOf(::ImportListViewModel)
     viewModelOf(::LibraryViewModel)
     viewModelOf(::HomeViewModel)
     viewModelOf(::SettingsViewModel)

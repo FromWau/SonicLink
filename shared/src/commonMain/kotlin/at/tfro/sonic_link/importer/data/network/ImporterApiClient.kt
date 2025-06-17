@@ -1,10 +1,10 @@
 package at.tfro.sonic_link.importer.data.network
 
+import at.tfro.sonic_link.core.data.network.ensureHttps
 import at.tfro.sonic_link.core.domain.repository.SettingRepository
 import at.tfro.sonic_link.importer.data.model.PossibleMediaDto
 import at.tfro.sonic_link.utils.Logger
 import at.tfro.sonic_link.utils.e
-import at.tfro.sonic_link.utils.i
 import at.tfro.sonic_link.utils.tag
 import at.tfro.sonic_link.utils.w
 import io.ktor.client.HttpClient
@@ -31,10 +31,9 @@ class ImporterApiClient(
             return emptyList()
         }
 
-        appLogger.tag(LOG_TAG).i { "Fetching importable media from the server..." }
         try {
             val response = httpClient.get {
-                url("${setting.host}/triage")
+                url("${setting.host.ensureHttps()}/triage")
             }
 
             if (response.status.isSuccess()) {

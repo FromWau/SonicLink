@@ -1,9 +1,9 @@
-package at.tfro.sonic_link.importer.presentation
+package at.tfro.sonic_link.importer.presentation.importer_list
 
 import at.tfro.sonic_link.core.presentation.StringValue
 import at.tfro.sonic_link.importer.domain.model.ImportMedia
 
-data class ImporterState(
+data class ImportListState(
     val error: StringValue? = null,
     val isLoading: Boolean = true,
     val mediaToImport: List<ImportMedia> = emptyList(),

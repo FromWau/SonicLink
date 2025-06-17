@@ -1,0 +1,16 @@
+# Get all import able media
+GET {{SERVER_URL}}/triage
+
+###
+
+POST {{SERVER_URL}}/triage/import
+Accept: application/json
+Content-Type: application/json
+
+{
+    "path": "SystemOfADown/ChopSuey!.mp3",
+    "title": "Chop Suey!",
+    "album": "",
+    "artist": "System Of ADown"
+}
+

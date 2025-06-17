@@ -12,8 +12,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import at.tfro.sonic_link.core.domain.model.Setting
 import at.tfro.sonic_link.home.presentation.HomeScreen
 import at.tfro.sonic_link.home.presentation.HomeState
-import at.tfro.sonic_link.importer.presentation.ImporterScreen
-import at.tfro.sonic_link.importer.presentation.ImporterState
+import at.tfro.sonic_link.importer.domain.model.ImportMedia
+import at.tfro.sonic_link.importer.presentation.importer_list.ImportListScreen
+import at.tfro.sonic_link.importer.presentation.importer_list.ImportListState
 import at.tfro.sonic_link.library.presentation.LibraryScreen
 import at.tfro.sonic_link.library.presentation.LibraryState
 import at.tfro.sonic_link.settings.presentation.SettingsScreen
@@ -57,11 +58,40 @@ private fun Home_Preview() {
 
 @Preview(device = "id:pixel_7_pro")
 @Composable
-private fun Importer_Preview() {
+private fun Importer_Preview_empty() {
     PreviewContainer {
-        val state = ImporterState()
+        val state = ImportListState()
 
-        ImporterScreen(
+        ImportListScreen(
+            state = state,
+            onAction = {},
+            onNav = {}
+        )
+    }
+}
+
+@Preview(device = "id:pixel_7_pro")
+@Composable
+private fun Importer_Preview_notEmpty() {
+    PreviewContainer {
+        val state = ImportListState(
+            mediaToImport = listOf(
+                ImportMedia(
+                    path = "SystemOfADown/ChopSuey!.mp3",
+                    title = "Chop Suey!",
+                    album = "",
+                    artist = "System Of ADown",
+                ),
+                ImportMedia(
+                    path = "Gorillaz/FeelGoodInc..mp3",
+                    title = "Feel Good Inc.",
+                    album = "",
+                    artist = "Gorillaz",
+                )
+            )
+        )
+
+        ImportListScreen(
             state = state,
             onAction = {},
             onNav = {}

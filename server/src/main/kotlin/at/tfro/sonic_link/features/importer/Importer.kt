@@ -2,6 +2,7 @@ package at.tfro.sonic_link.features.importer
 
 import at.tfro.sonic_link.Log
 import at.tfro.sonic_link.ServerSettings
+import at.tfro.sonic_link.api.routes.triage.model.Media
 import kotlinx.serialization.Serializable
 import java.io.File
 
@@ -35,6 +36,12 @@ class Importer {
         }
 
         Log.i { "Request to import file: $file" }
+    }
+
+    fun exists(media: Media): Boolean {
+        val folder = ServerSettings.triageFolder
+        val file = File(folder, media.path)
+        return file.exists()
     }
 }
 

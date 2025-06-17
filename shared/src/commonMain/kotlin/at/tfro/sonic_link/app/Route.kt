@@ -10,8 +10,18 @@ sealed interface Route {
     @Serializable
     data object Home : Route
 
-    @Serializable
-    data object Importer : Route
+    sealed class Import : Route {
+        @Serializable
+        data object ImportList : Import()
+
+        @Serializable
+        data class ImportMedia(
+            val path: String,
+            val title: String,
+            val artist: String,
+            val album: String,
+        ) : Import()
+    }
 
     @Serializable
     data object Library : Route

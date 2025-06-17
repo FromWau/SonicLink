@@ -1,4 +1,4 @@
-package at.tfro.sonic_link.importer.presentation
+package at.tfro.sonic_link.importer.presentation.importer_list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,10 +8,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class ImporterViewModel(
+class ImportListViewModel(
     private val importerRepository: ImporterRepository,
 ) : ViewModel() {
-    private val _state = MutableStateFlow(ImporterState())
+    private val _state = MutableStateFlow(ImportListState())
     val state = _state.asStateFlow()
 
     init {
@@ -24,9 +24,9 @@ class ImporterViewModel(
         }
     }
 
-    fun onAction(action: ImporterAction) {
+    fun onAction(action: ImportListAction) {
         when (action) {
-            ImporterAction.OnBack -> {
+            ImportListAction.OnBack -> {
                 _state.update {
                     if (it.mediaToIdentify != null) {
                         it.copy(mediaToIdentify = null)
@@ -35,18 +35,6 @@ class ImporterViewModel(
                     }
                 }
             }
-
-            is ImporterAction.OnError -> {}
-            is ImporterAction.OnImportableMediaSelected -> {
-                _state.update {
-                    it.copy(mediaToIdentify = action.media)
-                }
-            }
-
-            is ImporterAction.OnImportMedia -> {}
-            is ImporterAction.OnMediaUnselected -> {}
-            is ImporterAction.OnSearchQueryChanged -> {}
-            is ImporterAction.OnTabSelected -> {}
         }
     }
 }
