@@ -1,7 +1,8 @@
 package at.tfro.sonic_link.api.routes
 
 import at.tfro.sonic_link.api.routes.triage.triageRoutes
-import at.tfro.sonic_link.features.musicbrainz_api.MusicbrainzApi
+import at.tfro.sonic_link.logger.PlatformLogger
+import at.tfro.sonic_link.musicbrainz_api.MusicbrainzApi
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
 import io.ktor.server.response.respond
@@ -30,7 +31,7 @@ fun Application.configureRouting() {
                 return@get
             }
 
-            val search = MusicbrainzApi.search(
+            val search = MusicbrainzApi(logger = PlatformLogger()).search(
                 artist = artist,
                 album = album,
                 recording = recording

@@ -37,7 +37,7 @@ kotlin {
             implementation(libs.koin.android)
         }
         commonMain.dependencies {
-            implementation(projects.shared)
+            implementation(projects.sharedClient)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)

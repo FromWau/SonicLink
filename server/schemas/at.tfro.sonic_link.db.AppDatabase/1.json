@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "98ef094a72399372c71c7befaba7f07e",
+    "identityHash": "10d18eb53a71a86c704537817c1f41f4",
     "entities": [
       {
         "tableName": "album",
@@ -66,12 +66,12 @@
       },
       {
         "tableName": "media",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` BLOB NOT NULL, `name` TEXT NOT NULL, `path` TEXT NOT NULL, `type` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `path` TEXT NOT NULL, `type` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
             "columnName": "id",
-            "affinity": "BLOB",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -103,7 +103,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '98ef094a72399372c71c7befaba7f07e')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '10d18eb53a71a86c704537817c1f41f4')"
     ]
   }
 }

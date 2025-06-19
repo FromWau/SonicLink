@@ -17,6 +17,7 @@ application {
 
 dependencies {
     implementation(projects.interim)
+    implementation(projects.core)
 
     implementation(libs.logback)
     implementation(libs.slf4j)
@@ -49,4 +50,10 @@ dependencies {
 
 room {
     schemaDirectory("$projectDir/schemas")
+}
+
+kotlin {
+    compilerOptions {
+        freeCompilerArgs.add("-Xopt-in=kotlin.uuid.ExperimentalUuidApi")
+    }
 }

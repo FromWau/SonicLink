@@ -4,7 +4,7 @@ import at.tfro.sonic_link.Log
 import at.tfro.sonic_link.api.routes.triage.model.Media
 import at.tfro.sonic_link.api.routes.triage.model.PossibleMappings
 import at.tfro.sonic_link.features.importer.Importer
-import at.tfro.sonic_link.features.musicbrainz_api.MusicbrainzApi
+import at.tfro.sonic_link.musicbrainz_api.MusicbrainzApi
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
@@ -12,8 +12,11 @@ import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import kotlinx.coroutines.runBlocking
+import org.koin.ktor.ext.inject
 
 fun Route.triageRoutes() {
+    val musicbrainzApi by inject<MusicbrainzApi>()
+
     get("/triage") {
         val foundMedia = Importer().importAble().toList()
 
@@ -32,7 +35,7 @@ fun Route.triageRoutes() {
 
         val possibleMappings: PossibleMappings =
             runBlocking {
-                val mappings = MusicbrainzApi.search(
+                val mappings = musicbrainzApi.search(
                     recording = request.title,
                     album = request.album,
                     artist = request.artist,

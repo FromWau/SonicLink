@@ -3,7 +3,9 @@ package at.tfro.sonic_link.db
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
+import at.tfro.sonic_link.db.converters.UuidConverter
 import at.tfro.sonic_link.db.dao.AlbumDao
 import at.tfro.sonic_link.db.dao.ArtistDao
 import at.tfro.sonic_link.db.dao.MediaDao
@@ -21,6 +23,7 @@ import java.io.File
     ],
     version = DatabaseConfig.APP_DATABASE_VERSION,
 )
+@TypeConverters(UuidConverter::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun mediaDao(): MediaDao
     abstract fun artistDao(): ArtistDao
