@@ -2,7 +2,6 @@ package at.tfro.sonic_link.logger
 
 import platform.Foundation.NSLog
 
-@Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
 actual class PlatformLogger actual constructor() : Logger {
     override fun log(tag: String, logLevel: LogLevel, lazyMessage: () -> String) {
         when (logLevel) {

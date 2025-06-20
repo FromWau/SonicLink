@@ -13,7 +13,12 @@ import at.tfro.sonic_link.importer.data.repository.ImporterRepositoryImpl
 import at.tfro.sonic_link.importer.domain.repository.ImporterRepository
 import at.tfro.sonic_link.importer.presentation.importer_list.ImportListViewModel
 import at.tfro.sonic_link.library.presentation.LibraryViewModel
+import at.tfro.sonic_link.logger.DebugLogger
+import at.tfro.sonic_link.logger.Logger
+import at.tfro.sonic_link.logger.PlatformLogger
+import at.tfro.sonic_link.network.HttpClientFactory
 import at.tfro.sonic_link.settings.presentation.SettingsViewModel
+import io.ktor.client.HttpClient
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
@@ -36,6 +41,13 @@ val sharedModules = module {
             .build()
     }
     single { get<SettingDatabase>().settingDao }
+}
+
+
+val coreModule = module {
+    single { PlatformLogger() }
+    singleOf(::DebugLogger).bind<Logger>()
+    single<HttpClient> { HttpClientFactory.create(get(), get()) }
 }
 
 val viewModelModules = module {

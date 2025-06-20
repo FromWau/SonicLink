@@ -1,13 +1,21 @@
 package at.tfro.sonic_link
 
+import at.tfro.sonic_link.logger.Logger
+import at.tfro.sonic_link.logger.tag
+import at.tfro.sonic_link.logger.w
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigException
 import com.typesafe.config.ConfigFactory
-import org.slf4j.helpers.Reporter.warn
 import java.io.File
 
-object ServerSettings {
-    private val config: Config = ConfigFactory.load()
+class ServerSettings(
+    private val logger: Logger,
+) {
+    companion object {
+        private const val LOG_TAG = "ServerSettings"
+    }
+
+    private val config: Config get() = ConfigFactory.load()
 
     val libraryFolder: File
         get() {
@@ -18,7 +26,7 @@ object ServerSettings {
             val libraryFolder = File(libraryPath)
 
             if (!libraryFolder.exists()) {
-                warn("Media folder does not exist: $libraryPath - creating it")
+                logger.tag(Companion.LOG_TAG).w { "Media folder does not exist: $libraryPath - creating it" }
                 libraryFolder.mkdirs()
             }
 
@@ -34,17 +42,18 @@ object ServerSettings {
             val triageFolder = File(triagePath)
 
             if (!triageFolder.exists()) {
-                warn("Triage folder does not exist: $triagePath - creating it")
+                logger.tag(Companion.LOG_TAG).w { "Triage folder does not exist: $triagePath - creating it" }
                 triageFolder.mkdirs()
             }
 
             return triageFolder
         }
-}
 
-private fun Config.propertyOrNull(path: String): String? = try {
-    this.getString(path)
-} catch (e: ConfigException.Missing) {
-    Log.i { "Warning: Config key '$path' exists but is not a string." }
-    null
+
+    private fun Config.propertyOrNull(path: String): String? = try {
+        this.getString(path)
+    } catch (e: ConfigException.Missing) {
+        logger.tag(Companion.LOG_TAG).w { "Config key '$path' exists but is not a string." }
+        null
+    }
 }

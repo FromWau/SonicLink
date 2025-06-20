@@ -1,9 +1,11 @@
 package at.tfro.sonic_link.api.routes.triage
 
-import at.tfro.sonic_link.Log
 import at.tfro.sonic_link.api.routes.triage.model.Media
 import at.tfro.sonic_link.api.routes.triage.model.PossibleMappings
 import at.tfro.sonic_link.features.importer.Importer
+import at.tfro.sonic_link.logger.Logger
+import at.tfro.sonic_link.logger.tag
+import at.tfro.sonic_link.logger.w
 import at.tfro.sonic_link.musicbrainz_api.MusicbrainzApi
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.request.receive
@@ -15,10 +17,13 @@ import kotlinx.coroutines.runBlocking
 import org.koin.ktor.ext.inject
 
 fun Route.triageRoutes() {
+    val importer by inject<Importer>()
     val musicbrainzApi by inject<MusicbrainzApi>()
+    val logger by inject<Logger>()
+    val LOG_TAG = "TriageRoutes"
 
     get("/triage") {
-        val foundMedia = Importer().importAble().toList()
+        val foundMedia = importer.importAble().toList()
 
         call.respond(HttpStatusCode.OK, foundMedia)
     }
@@ -27,8 +32,8 @@ fun Route.triageRoutes() {
         val request = call.receive<Media>()
 
         // Validate the request
-        if (!Importer().exists(request)) {
-            Log.w { "Requested media path does not exist" }
+        if (!importer.exists(request)) {
+            logger.tag(LOG_TAG).w { "Requested media path does not exist" }
             call.respond(HttpStatusCode.BadRequest, "Media path does not exist")
             return@post
         }
@@ -47,4 +52,3 @@ fun Route.triageRoutes() {
         call.respond(HttpStatusCode.OK, possibleMappings)
     }
 }
-

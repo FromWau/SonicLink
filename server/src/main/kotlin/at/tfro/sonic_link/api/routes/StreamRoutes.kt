@@ -11,13 +11,16 @@ import io.ktor.server.response.respondFile
 import io.ktor.server.response.respondOutputStream
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
+import org.koin.ktor.ext.inject
 import java.io.File
 
 fun Route.streamRoutes() {
+    val serverSettings by inject<ServerSettings>()
+
     get("/stream/{filename}") {
         val filename = call.parameters["filename"]
             ?: return@get call.respond(HttpStatusCode.BadRequest, "Missing filename")
-        val file = File(ServerSettings.libraryFolder, filename)
+        val file = File(serverSettings.libraryFolder, filename)
 
         if (!file.exists()) {
             return@get call.respond(HttpStatusCode.NotFound, "File not found")

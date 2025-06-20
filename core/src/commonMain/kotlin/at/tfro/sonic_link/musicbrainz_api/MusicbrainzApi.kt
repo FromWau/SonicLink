@@ -1,23 +1,23 @@
 package at.tfro.sonic_link.musicbrainz_api
 
 import at.tfro.sonic_link.logger.Logger
+import at.tfro.sonic_link.logger.d
+import at.tfro.sonic_link.logger.e
+import at.tfro.sonic_link.logger.tag
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.request.get
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
-class MusicbrainzApi constructor(
+class MusicbrainzApi(
     private val logger: Logger,
+    private val client: HttpClient,
 ) {
-    private val client = HttpClient(OkHttp) {
-        engine {
-            config {
-                retryOnConnectionFailure(true)
-            }
-        }
+    companion object {
+        private const val LOG_TAG = "MusicbrainzApi"
+        private const val BASE_URL = "https://musicbrainz.org/ws/2/recording"
     }
 
     private val json: Json = Json {
@@ -51,17 +51,12 @@ class MusicbrainzApi constructor(
             try {
                 return@let json.decodeFromString<SearchResponse>(it)
             } catch (e: Exception) {
-//                Logger.tag(LOG_TAG).e { "Failed to parse response: ${e.message}" }
+                logger.tag(LOG_TAG).e { "Failed to parse response: ${e.message}" }
                 throw e
             }
         }
-//        Log.d { "Response: $body" }
+        logger.tag(LOG_TAG).d { "Response: $body" }
         return body
-    }
-
-    companion object {
-        private const val BASE_URL = "https://musicbrainz.org/ws/2/recording"
-        private const val LOG_TAG = "MusicbrainzApi"
     }
 }
 
