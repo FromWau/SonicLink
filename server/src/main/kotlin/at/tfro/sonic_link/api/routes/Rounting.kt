@@ -1,14 +1,17 @@
 package at.tfro.sonic_link.api.routes
 
 import at.tfro.sonic_link.api.routes.triage.triageRoutes
-import at.tfro.sonic_link.features.musicbrainz_api.MusicbrainzApi
+import at.tfro.sonic_link.musicbrainz_api.MusicbrainzApi
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
 import io.ktor.server.response.respond
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
+import org.koin.ktor.ext.inject
 
 fun Application.configureRouting() {
+    val musicbrainzApi by inject<MusicbrainzApi>()
+
     routing {
         get("/") {
             call.respond(HttpStatusCode.OK, "OK")
@@ -30,7 +33,7 @@ fun Application.configureRouting() {
                 return@get
             }
 
-            val search = MusicbrainzApi.search(
+            val search = musicbrainzApi.search(
                 artist = artist,
                 album = album,
                 recording = recording

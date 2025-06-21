@@ -17,25 +17,16 @@ application {
 
 dependencies {
     implementation(projects.interim)
+    implementation(projects.core)
 
-    implementation(libs.logback)
-    implementation(libs.slf4j)
-
-    implementation(libs.ktor.server.core)
-    implementation(libs.ktor.server.netty)
-    implementation(libs.ktor.server.content.negotiation)
-
-    implementation(libs.ktor.client.core)
-    implementation(libs.ktor.client.okhttp)
-    implementation(libs.ktor.client.content.negotiation)
-    implementation(libs.ktor.serialization.kotlinx.json)
+    implementation(libs.bundles.ktor.server)
+    implementation(libs.bundles.ktor.client)
 
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.datetime)
 
     implementation(libs.koin.core)
     implementation(libs.koin.ktor)
-    implementation(libs.koin.logger.slf4j)
 
     implementation(libs.typesafeConfig)
 
@@ -49,4 +40,10 @@ dependencies {
 
 room {
     schemaDirectory("$projectDir/schemas")
+}
+
+kotlin {
+    compilerOptions {
+        freeCompilerArgs.add("-Xopt-in=kotlin.uuid.ExperimentalUuidApi")
+    }
 }

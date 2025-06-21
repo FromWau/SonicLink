@@ -1,6 +1,5 @@
 package at.tfro.sonic_link.api.routes.triage.model
 
-import at.tfro.sonic_link.features.musicbrainz_api.Recording
 import kotlinx.serialization.Serializable
 
 
@@ -8,4 +7,29 @@ import kotlinx.serialization.Serializable
 data class PossibleMappings(
     val media: Media,
     val mappings: List<Recording>,
+)
+
+@Serializable
+data class Recording(
+    val id: String,
+    val score: Int,
+    val artistCreditId: String,
+    val title: String,
+    val disambiguation: String? = null,
+    val video: String? = null,
+    val artistCredit: List<ArtistCredit>,
+)
+
+@Serializable
+data class ArtistCredit(
+    val name: String,
+    val artist: Artist,
+)
+
+@Serializable
+data class Artist(
+    val id: String,
+    val name: String,
+    val sortName: String? = null,
+    val disambiguation: String? = null,
 )
