@@ -4,6 +4,8 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlinSerialization)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.room)
 }
 
 kotlin {
@@ -18,6 +20,10 @@ kotlin {
     iosSimulatorArm64()
 
     jvm("desktop")
+
+    room {
+        schemaDirectory("$projectDir/schemas")
+    }
 
     sourceSets {
         val desktopMain by getting
@@ -36,6 +42,9 @@ kotlin {
 
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.datetime)
+
+            implementation(libs.room.runtime)
+            implementation(libs.sqlite.bundled)
         }
 
         desktopMain.dependencies {
@@ -44,6 +53,10 @@ kotlin {
 
         nativeMain.dependencies {
             implementation(libs.ktor.client.darwin)
+        }
+
+        dependencies {
+            ksp(libs.room.compiler)
         }
 
         all {

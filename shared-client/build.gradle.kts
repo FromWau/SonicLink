@@ -76,11 +76,17 @@ kotlin {
         dependencies {
             ksp(libs.room.compiler)
         }
+
+        all {
+            languageSettings {
+                optIn("kotlin.uuid.ExperimentalUuidApi")
+            }
+        }
     }
 }
 
 android {
-    namespace = "at.tfro.sonic_link.shared"
+    namespace = "at.tfro.sonic_link.shared_client"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11

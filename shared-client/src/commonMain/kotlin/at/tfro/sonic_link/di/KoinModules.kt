@@ -19,6 +19,8 @@ import at.tfro.sonic_link.logger.PlatformLogger
 import at.tfro.sonic_link.network.HttpClientFactory
 import at.tfro.sonic_link.settings.presentation.SettingsViewModel
 import io.ktor.client.HttpClient
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
@@ -36,8 +38,9 @@ val sharedModules = module {
 
     single {
         get<DatabaseFactory>().create()
-            .setDriver(BundledSQLiteDriver())
             .fallbackToDestructiveMigrationOnDowngrade(true)
+            .setDriver(BundledSQLiteDriver())
+            .setQueryCoroutineContext(Dispatchers.IO)
             .build()
     }
     single { get<SettingDatabase>().settingDao }

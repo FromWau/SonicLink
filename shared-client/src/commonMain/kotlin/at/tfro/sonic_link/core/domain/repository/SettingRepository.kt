@@ -10,7 +10,5 @@ interface SettingRepository {
 
     suspend fun getActiveSetting(): Flow<Setting?>
 
-    suspend fun getSettingById(id: Long): Setting?
-
     suspend fun delete(setting: Setting)
 }

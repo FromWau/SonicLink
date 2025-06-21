@@ -6,7 +6,7 @@ import kotlin.uuid.Uuid
 
 @Serializable
 data class Album(
-//    @Serializable(with = UuidSerializer::class)
+    @Serializable(with = UuidSerializer::class)
     val id: Uuid,
     val name: String,
     val path: String,

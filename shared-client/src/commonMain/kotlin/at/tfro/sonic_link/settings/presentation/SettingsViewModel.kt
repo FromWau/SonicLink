@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.uuid.Uuid
 
 class SettingsViewModel(
     private val settingRepo: SettingRepository,
@@ -31,7 +32,7 @@ class SettingsViewModel(
             is SettingsAction.OnAddServer -> viewModelScope.launch {
                 settingRepo.upsert(
                     setting = Setting(
-                        id = 0L,
+                        id = Uuid.random(),
                         host = action.host,
                         isActive = false,
                     )

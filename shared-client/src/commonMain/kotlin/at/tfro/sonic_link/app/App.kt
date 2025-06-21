@@ -38,7 +38,7 @@ fun App() {
                     startDestination = Route.Graph,
                 ) {
                     navigation<Route.Graph>(
-                        startDestination = Route.Import.ImportList,
+                        startDestination = Route.Settings,
                     ) {
                         composable<Route.Home> {
                             HomeScreenRoot(

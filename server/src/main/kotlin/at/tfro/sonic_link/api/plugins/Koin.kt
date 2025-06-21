@@ -1,9 +1,12 @@
 package at.tfro.sonic_link.api.plugins
 
 import at.tfro.sonic_link.ServerSettings
+import at.tfro.sonic_link.data.AlbumRepository
 import at.tfro.sonic_link.data.MediaRepository
 import at.tfro.sonic_link.data.MediaRepositoryImpl
 import at.tfro.sonic_link.db.AppDatabase
+import at.tfro.sonic_link.db.dao.AlbumDao
+import at.tfro.sonic_link.db.dao.ArtistDao
 import at.tfro.sonic_link.db.dao.MediaDao
 import at.tfro.sonic_link.db.getDatabase
 import at.tfro.sonic_link.features.importer.Importer
@@ -37,6 +40,9 @@ val coreModule = module {
 val serverModule = module {
     single { getDatabase() }
     single<MediaDao> { get<AppDatabase>().mediaDao() }
+    single<AlbumDao> { get<AppDatabase>().albumDao() }
+    single<ArtistDao> { get<AppDatabase>().artistDao() }
+
     single<MediaRepository> { MediaRepositoryImpl(get()) }
 
     singleOf(::ServerSettings)

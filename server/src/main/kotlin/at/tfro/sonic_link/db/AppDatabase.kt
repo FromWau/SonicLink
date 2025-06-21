@@ -5,7 +5,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
-import at.tfro.sonic_link.db.converters.UuidConverter
+import at.tfro.sonic_link.database.converter.UuidConverter
 import at.tfro.sonic_link.db.dao.AlbumDao
 import at.tfro.sonic_link.db.dao.ArtistDao
 import at.tfro.sonic_link.db.dao.MediaDao

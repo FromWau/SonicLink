@@ -20,6 +20,7 @@ import at.tfro.sonic_link.library.presentation.LibraryState
 import at.tfro.sonic_link.settings.presentation.SettingsScreen
 import at.tfro.sonic_link.settings.presentation.SettingsState
 import at.tfro.sonic_link.theme.AppTheme
+import kotlin.uuid.Uuid
 
 @Composable
 private fun PreviewContainer(
@@ -134,12 +135,12 @@ private fun Settings_Preview_not_empty() {
         val state = SettingsState(
             settings = listOf(
                 Setting(
-                    id = 0,
+                    id = Uuid.random(),
                     host = "example1.com",
                     isActive = false,
                 ),
                 Setting(
-                    id = 1,
+                    id = Uuid.random(),
                     host = "example2.com",
                     isActive = true,
                 ),

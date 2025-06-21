@@ -1,11 +1,13 @@
 package at.tfro.sonic_link.db.dao
 
 import androidx.room.Dao
-import androidx.room.Upsert
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import at.tfro.sonic_link.db.dbo.AlbumDbo
 
 @Dao
 interface AlbumDao {
-    @Upsert
-    suspend fun upsert(album: AlbumDbo): Unit
+    // INFO: DO NOT USE @Upsert, this breaks desktop platform
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsert(album: AlbumDbo)
 }

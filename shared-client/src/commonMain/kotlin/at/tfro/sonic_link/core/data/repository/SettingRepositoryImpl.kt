@@ -22,9 +22,6 @@ class SettingRepositoryImpl(
     override suspend fun getActiveSetting(): Flow<Setting?> =
         dao.getActiveSetting().map { it?.toDomain() }
 
-    override suspend fun getSettingById(id: Long): Setting? =
-        dao.getSettingById(id)?.toDomain()
-
     override suspend fun delete(setting: Setting) =
         dao.delete(setting.toSettingEntity())
 }

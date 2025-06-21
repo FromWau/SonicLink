@@ -10,7 +10,7 @@ import kotlin.uuid.Uuid
 @Entity(tableName = "media")
 data class MediaDbo(
     @PrimaryKey
-//    @Serializable(with = UuidSerializer::class)
+    @Serializable(with = UuidSerializer::class)
     @ColumnInfo(name = "id") val id: Uuid = Uuid.random(),
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "path") val path: String,
