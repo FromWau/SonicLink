@@ -5,6 +5,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
+import at.tfro.sonic_link.ServerSettings
 import at.tfro.sonic_link.database.converter.UuidConverter
 import at.tfro.sonic_link.db.dao.AlbumDao
 import at.tfro.sonic_link.db.dao.ArtistDao
@@ -32,7 +33,7 @@ abstract class AppDatabase : RoomDatabase() {
 
 fun getDatabaseBuilder(): RoomDatabase.Builder<AppDatabase> {
     val dbFile = File(
-        System.getProperty("java.io.tmpdir"),
+        ServerSettings().dataDir,
         "${DatabaseConfig.APP_DATABASE_NAME}.db"
     )
 
