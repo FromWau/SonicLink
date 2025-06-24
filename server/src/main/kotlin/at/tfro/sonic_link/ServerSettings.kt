@@ -1,20 +1,11 @@
 package at.tfro.sonic_link
 
-import at.tfro.sonic_link.logger.Logger
-import at.tfro.sonic_link.logger.tag
-import at.tfro.sonic_link.logger.w
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigException
 import com.typesafe.config.ConfigFactory
 import java.io.File
 
-class ServerSettings(
-    private val logger: Logger,
-) {
-    companion object {
-        private const val LOG_TAG = "ServerSettings"
-    }
-
+class ServerSettings() {
     private val config: Config get() = ConfigFactory.load()
 
     val libraryFolder: File
@@ -26,8 +17,6 @@ class ServerSettings(
             val libraryFolder = File(libraryPath)
 
             if (!libraryFolder.exists()) {
-                logger.tag(LOG_TAG)
-                    .w { "Media folder does not exist: $libraryPath - creating it" }
                 libraryFolder.mkdirs()
             }
 
@@ -43,18 +32,31 @@ class ServerSettings(
             val triageFolder = File(triagePath)
 
             if (!triageFolder.exists()) {
-                logger.tag(LOG_TAG).w { "Triage folder does not exist: $triagePath - creating it" }
                 triageFolder.mkdirs()
             }
 
             return triageFolder
         }
 
+    val dataDir: File
+        get() {
+            val dataPath = config.propertyOrNull("data.dir")
+                ?: System.getenv("DATA_DIR")
+                ?: error("No data directory specified. Set data.dir in the config or set DATA_DIR environment variable.")
+
+            val dataDir = File(dataPath)
+
+            if (!dataDir.exists()) {
+                dataDir.mkdirs()
+            }
+
+            return dataDir
+        }
+
 
     private fun Config.propertyOrNull(path: String): String? = try {
         this.getString(path)
     } catch (_: ConfigException.Missing) {
-        logger.tag(LOG_TAG).w { "Config key '$path' exists but is not a string." }
         null
     }
 }

@@ -16,6 +16,7 @@ import at.tfro.sonic_link.library.presentation.LibraryViewModel
 import at.tfro.sonic_link.logger.DebugLogger
 import at.tfro.sonic_link.logger.Logger
 import at.tfro.sonic_link.logger.PlatformLogger
+import at.tfro.sonic_link.logger.PlatformLoggerFactory
 import at.tfro.sonic_link.network.HttpClientFactory
 import at.tfro.sonic_link.settings.presentation.SettingsViewModel
 import io.ktor.client.HttpClient
@@ -48,7 +49,6 @@ val sharedModules = module {
 
 
 val coreModule = module {
-    single { PlatformLogger() }
     singleOf(::DebugLogger).bind<Logger>()
     single<HttpClient> { HttpClientFactory.create(get(), get()) }
 }
