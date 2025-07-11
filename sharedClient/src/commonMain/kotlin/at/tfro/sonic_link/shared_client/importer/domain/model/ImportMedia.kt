@@ -1,0 +1,8 @@
+package at.tfro.sonic_link.shared_client.importer.domain.model
+
+data class ImportMedia(
+    val path: String,
+    val title: String,
+    val artist: String,
+    val album: String,
+)

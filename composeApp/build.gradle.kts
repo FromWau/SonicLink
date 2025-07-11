@@ -26,11 +26,9 @@ kotlin {
         }
     }
 
-    jvm("desktop")
+    jvm()
 
     sourceSets {
-        val desktopMain by getting
-
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
@@ -39,7 +37,7 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.sharedClient)
         }
-        desktopMain.dependencies {
+        jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
         }
         nativeMain.dependencies {
@@ -80,7 +78,7 @@ dependencies {
 
 compose.desktop {
     application {
-        mainClass = "at.tfro.sonic_link.MainKt"
+        mainClass = "at.tfro.sonic_link.compose_app.MainKt"
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)

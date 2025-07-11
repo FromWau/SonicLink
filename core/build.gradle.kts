@@ -19,15 +19,13 @@ kotlin {
     iosArm64()
     iosSimulatorArm64()
 
-    jvm("desktop")
+    jvm()
 
     room {
         schemaDirectory("$projectDir/schemas")
     }
 
     sourceSets {
-        val desktopMain by getting
-
         androidMain.dependencies {
             implementation(libs.koin.android)
             implementation(libs.ktor.client.okhttp)
@@ -47,7 +45,7 @@ kotlin {
             implementation(libs.sqlite.bundled)
         }
 
-        desktopMain.dependencies {
+        jvmMain.dependencies {
             implementation(libs.ktor.client.okhttp)
         }
 

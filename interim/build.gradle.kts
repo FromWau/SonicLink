@@ -17,19 +17,17 @@ kotlin {
     iosArm64()
     iosSimulatorArm64()
 
-    jvm("desktop")
+    jvm()
 
 
     sourceSets {
-        val desktopMain by getting
-
         androidMain.dependencies {}
 
         commonMain.dependencies {
             implementation(libs.kotlinx.serialization.json)
         }
 
-        desktopMain.dependencies {}
+        jvmMain.dependencies {}
 
         nativeMain.dependencies {}
 

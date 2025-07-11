@@ -8,17 +8,12 @@
                     "compose"
                 ]
             },
-            "ios": {
+            "native": {
                 "ui": [
                     "compose"
                 ]
             },
-            "desktop": {
-                "ui": [
-                    "compose"
-                ]
-            },
-            "web": {
+            "jvm": {
                 "ui": [
                     "compose"
                 ]

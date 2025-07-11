@@ -1,0 +1,201 @@
+package at.tfro.sonic_link.shared_client.importer.presentation.importer_list
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Card
+import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
+import androidx.compose.material3.rememberDrawerState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import at.tfro.sonic_link.shared_client.app.Route
+import at.tfro.sonic_link.shared_client.core.presentation.side_drawer.SideDrawer
+import org.koin.compose.viewmodel.koinViewModel
+
+@Composable
+fun ImportListScreenRoot(
+    viewModel: ImportListViewModel = koinViewModel<ImportListViewModel>(),
+    onBack: () -> Unit,
+    onNav: (Route) -> Unit,
+) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
+    ImportListScreen(
+        state = state,
+        onAction = { action ->
+            when (action) {
+                is ImportListAction.OnBack -> onBack()
+            }
+
+            viewModel.onAction(action)
+        },
+        onNav = onNav,
+    )
+}
+
+@Composable
+fun ImportListScreen(
+    state: ImportListState,
+    onAction: (ImportListAction) -> Unit,
+    onNav: (Route) -> Unit,
+) {
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
+
+    SideDrawer(
+        drawerState = drawerState,
+        scope = scope,
+        onNav = onNav,
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Text(
+                text = "Importer",
+                style = MaterialTheme.typography.headlineLarge,
+            )
+
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                if (state.mediaToImport.isEmpty()) {
+                    item {
+                        Box(
+                            modifier = Modifier.fillMaxWidth().padding(16.dp),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Text(
+                                text = "No media to import",
+                                style = MaterialTheme.typography.titleLarge,
+                            )
+                        }
+                    }
+                }
+                items(state.mediaToImport) { media ->
+                    Card(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                    ) {
+                        Box(
+                            modifier = Modifier.fillMaxWidth().padding(8.dp),
+                            contentAlignment = Alignment.CenterStart,
+                        ) {
+                            Column {
+                                Row {
+                                    Text(
+                                        text = media.path,
+                                        modifier = Modifier.fillMaxWidth(),
+                                        style = MaterialTheme.typography.bodyLarge,
+                                    )
+                                }
+
+                                HorizontalDivider()
+
+                                var title by remember { mutableStateOf(media.title) }
+                                var artist by remember { mutableStateOf(media.artist) }
+                                var album by remember { mutableStateOf(media.album) }
+
+                                Column {
+                                    TextField(
+                                        value = title,
+                                        onValueChange = { title = it },
+                                        label = { Text("Enter title") },
+                                        modifier = Modifier.fillMaxWidth(),
+                                    )
+
+                                    TextField(
+                                        value = artist,
+                                        onValueChange = { artist = it },
+                                        label = { Text("Enter artist") },
+                                        modifier = Modifier.fillMaxWidth()
+                                    )
+
+                                    TextField(
+                                        value = album,
+                                        onValueChange = { album = it },
+                                        label = { Text("Enter album") },
+                                        modifier = Modifier.fillMaxWidth()
+                                    )
+                                }
+
+                                Row {
+                                    TextButton(
+                                        onClick = { onNav(Route.Import.ImportMedia) },
+                                        modifier = Modifier.fillMaxWidth()
+                                    ) {
+                                        Text("Identify")
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (state.identifiedMedia.isEmpty()) {
+                    item {
+                        Box(
+                            modifier = Modifier.fillMaxWidth().padding(16.dp),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Text(
+                                text = "No identified media",
+                                style = MaterialTheme.typography.titleLarge,
+                            )
+                        }
+                    }
+                }
+                items(state.identifiedMedia) { media ->
+                    Card(
+                        modifier = Modifier.background(Color.Green.copy(alpha = .8f))
+                    ) {
+                        Box(
+                            modifier = Modifier.fillMaxWidth().padding(8.dp),
+                            contentAlignment = Alignment.CenterStart,
+                        ) {
+                            Column {
+                                Row {
+                                    Text(
+                                        text = media.path,
+                                        modifier = Modifier.fillMaxWidth(),
+                                        style = MaterialTheme.typography.bodyLarge,
+                                    )
+                                }
+
+                                HorizontalDivider()
+
+                                Row {
+                                    Text(text = "Title: ${media.title}")
+                                    Text(text = "Artist: ${media.artist}")
+                                    Text(text = "Album: ${media.album}")
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
