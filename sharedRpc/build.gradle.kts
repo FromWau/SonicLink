@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlinSerialization)
+    alias(libs.plugins.kotlinx.rpc)
 }
 
 kotlin {
@@ -23,11 +24,23 @@ kotlin {
     sourceSets {
         androidMain.dependencies {}
 
-        commonMain.dependencies {}
+        commonMain.dependencies {
+            api(libs.kotlinx.coroutines.core)
+
+            implementation(libs.kotlinx.serialization.json)
+            implementation(libs.kotlinx.datetime)
+            implementation(libs.kotlinx.rpc.core)
+        }
 
         jvmMain.dependencies {}
 
         nativeMain.dependencies {}
+
+        all {
+            languageSettings {
+                optIn("kotlin.uuid.ExperimentalUuidApi")
+            }
+        }
     }
 }
 

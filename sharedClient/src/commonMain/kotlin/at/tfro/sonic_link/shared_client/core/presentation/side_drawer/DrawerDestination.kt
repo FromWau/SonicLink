@@ -16,4 +16,8 @@ enum class DrawerDestination(val label: StringValue, val route: Route) {
         route = Route.Settings,
         label = StringValue.HardCoded("Settings")
     ),
+    Home(
+        route = Route.Home,
+        label = StringValue.HardCoded("Home")
+    ),
 }

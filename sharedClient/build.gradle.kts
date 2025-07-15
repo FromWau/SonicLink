@@ -39,6 +39,7 @@ kotlin {
 
         commonMain.dependencies {
             implementation(projects.core)
+            implementation(projects.sharedRpc)
 
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -62,6 +63,14 @@ kotlin {
 
             implementation(libs.room.runtime)
             implementation(libs.sqlite.bundled)
+
+            implementation(libs.kotlinx.rpc.core)
+            implementation(libs.kotlinx.rpc.krpc.client)
+            implementation(libs.kotlinx.rpc.krpc.serialization.json)
+            implementation(libs.kotlinx.rpc.krpc.ktor.client)
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.websockets)
+
         }
 
         jvmMain.dependencies {

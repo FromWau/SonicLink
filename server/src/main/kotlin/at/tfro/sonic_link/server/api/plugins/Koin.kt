@@ -1,14 +1,5 @@
 package at.tfro.sonic_link.server.api.plugins
 
-import at.tfro.sonic_link.server.ServerSettings
-import at.tfro.sonic_link.server.data.MediaRepository
-import at.tfro.sonic_link.server.data.MediaRepositoryImpl
-import at.tfro.sonic_link.server.db.AppDatabase
-import at.tfro.sonic_link.server.db.dao.AlbumDao
-import at.tfro.sonic_link.server.db.dao.ArtistDao
-import at.tfro.sonic_link.server.db.dao.MediaDao
-import at.tfro.sonic_link.server.db.getDatabase
-import at.tfro.sonic_link.server.features.importer.Importer
 import at.tfro.sonic_link.core.logger.DebugLogger
 import at.tfro.sonic_link.core.logger.Logger
 import at.tfro.sonic_link.core.logger.PlatformLogger
@@ -20,6 +11,21 @@ import at.tfro.sonic_link.core.logger.tag
 import at.tfro.sonic_link.core.logger.w
 import at.tfro.sonic_link.core.musicbrainz_api.MusicbrainzApi
 import at.tfro.sonic_link.core.network.HttpClientFactory
+import at.tfro.sonic_link.server.ServerSettings
+import at.tfro.sonic_link.server.data.MediaRepository
+import at.tfro.sonic_link.server.data.MediaRepositoryImpl
+import at.tfro.sonic_link.server.db.AppDatabase
+import at.tfro.sonic_link.server.db.dao.AlbumDao
+import at.tfro.sonic_link.server.db.dao.ArtistDao
+import at.tfro.sonic_link.server.db.dao.MediaDao
+import at.tfro.sonic_link.server.db.getAppDatabase
+import at.tfro.sonic_link.server.features.importer.Importer
+import at.tfro.sonic_link.server.sync.domain.SyncServiceImpl
+import at.tfro.sonic_link.server.sync.data.SyncRepositoryImpl
+import at.tfro.sonic_link.server.sync.data.database.SyncDao
+import at.tfro.sonic_link.server.sync.data.database.SyncDatabase
+import at.tfro.sonic_link.server.sync.data.database.getSyncDatabase
+import at.tfro.sonic_link.server.sync.domain.repository.SyncRepository
 import io.ktor.client.HttpClient
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
@@ -43,13 +49,18 @@ val coreModule = module {
 }
 
 val serverModule = module {
-    single { getDatabase() }
+    single { getAppDatabase() }
     single<MediaDao> { get<AppDatabase>().mediaDao() }
     single<AlbumDao> { get<AppDatabase>().albumDao() }
     single<ArtistDao> { get<AppDatabase>().artistDao() }
 
     single<MediaRepository> { MediaRepositoryImpl(get()) }
 
+    single { getSyncDatabase() }
+    single<SyncDao> { get<SyncDatabase>().syncDao() }
+    single<SyncRepository> { SyncRepositoryImpl(get(), get()) }
+
+    singleOf(::SyncServiceImpl)
     singleOf(::MusicbrainzApi)
     singleOf(::Importer)
 }

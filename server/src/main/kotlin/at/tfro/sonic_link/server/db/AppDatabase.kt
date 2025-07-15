@@ -22,7 +22,7 @@ import java.io.File
         ArtistDbo::class,
         MediaDbo::class,
     ],
-    version = DatabaseConfig.APP_DATABASE_VERSION,
+    version = AppDatabaseConfig.APP_DATABASE_VERSION,
 )
 @TypeConverters(UuidConverter::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -31,16 +31,16 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun albumDao(): AlbumDao
 }
 
-fun getDatabaseBuilder(): RoomDatabase.Builder<AppDatabase> {
+private fun getDatabaseBuilder(): RoomDatabase.Builder<AppDatabase> {
     val dbFile = File(
         ServerSettings().dataDir,
-        "${DatabaseConfig.APP_DATABASE_NAME}.db"
+        "${AppDatabaseConfig.APP_DATABASE_NAME}.db"
     )
 
     return Room.databaseBuilder(dbFile.absolutePath)
 }
 
-fun getDatabase(): AppDatabase = getDatabaseBuilder()
+fun getAppDatabase(): AppDatabase = getDatabaseBuilder()
     .fallbackToDestructiveMigration(dropAllTables = true)
     .fallbackToDestructiveMigrationOnDowngrade(dropAllTables = true)
     .setDriver(BundledSQLiteDriver())

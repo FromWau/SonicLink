@@ -2,6 +2,7 @@ package at.tfro.sonic_link.server.api.routes
 
 import at.tfro.sonic_link.server.api.routes.triage.triageRoutes
 import at.tfro.sonic_link.core.musicbrainz_api.MusicbrainzApi
+import at.tfro.sonic_link.server.sync.routing.syncRoutes
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
 import io.ktor.server.response.respond
@@ -19,6 +20,7 @@ fun Application.configureRouting() {
         triageRoutes()
         streamRoutes()
         mediaRoutes()
+        syncRoutes()
 
         get("/search") {
             val artist = call.request.queryParameters["artist"]

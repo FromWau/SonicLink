@@ -7,7 +7,7 @@ import at.tfro.sonic_link.core.database.converter.UuidConverter
 
 @Database(
     entities = [SettingEntity::class],
-    version = 1,
+    version = SettingDatabase.DB_VERSION,
 )
 @TypeConverters(UuidConverter::class)
 abstract class SettingDatabase : RoomDatabase() {
@@ -15,5 +15,6 @@ abstract class SettingDatabase : RoomDatabase() {
 
     companion object {
         const val DB_NAME = "setting.db"
+        const val DB_VERSION = 1
     }
 }
