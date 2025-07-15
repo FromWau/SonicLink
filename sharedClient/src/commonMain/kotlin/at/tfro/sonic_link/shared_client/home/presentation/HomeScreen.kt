@@ -3,8 +3,6 @@ package at.tfro.sonic_link.shared_client.home.presentation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -14,11 +12,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -71,6 +69,49 @@ fun HomeScreenRoot(
     )
 }
 
+@Composable
+fun SyncRpc() {
+    var serviceOrNull: SyncService? by remember { mutableStateOf(null) }
+
+    LaunchedEffect(Unit) {
+        serviceOrNull = client.rpc {
+            url {
+                host = "127.0.0.1"
+                port = 8080
+                encodedPath = "/sync"
+            }
+
+            rpcConfig {
+                serialization {
+                    json()
+                }
+            }
+        }.withService()
+    }
+
+    val service = serviceOrNull // for smart casting
+
+    if (service != null) {
+        val receivedVersions = remember { mutableStateListOf<SyncVersionRpc>() }
+
+        LaunchedEffect(service) {
+            service.subscribeToCurrentVersion().collect {
+                receivedVersions.add(it)
+            }
+        }
+
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            receivedVersions.forEach {
+                Text("Version: ${it.version} at ${it.updatedAt}")
+            }
+        }
+    }
+}
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
@@ -115,59 +156,7 @@ fun HomeScreen(
                 },
             )
 
-
-            var serviceOrNull: SyncService? by remember { mutableStateOf(null) }
-
-            LaunchedEffect(Unit) {
-                serviceOrNull = client.rpc {
-                    url {
-                        host = "localhost"
-                        port = 8080
-                        encodedPath = "/sync/update"
-                    }
-
-                    rpcConfig {
-                        serialization {
-                            json()
-                        }
-                    }
-                }.withService()
-            }
-
-            val service = serviceOrNull // for smart casting
-
-            val receivedVersions = remember { mutableListOf<SyncVersionRpc>() }
-            if (service != null) {
-                val coroutineScope = rememberCoroutineScope()
-
-                TextButton(
-                    onClick = {
-                        coroutineScope.launch {
-                            service.update()
-                        }
-                    },
-                ) {
-                    Text("Send Update Request")
-                }
-
-                LaunchedEffect(service) {
-                    service.subscribeToCurrentVersion().collect {
-                        receivedVersions.add(it)
-                    }
-                }
-            }
-
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                items(receivedVersions) { item ->
-                    Text(
-                        text = "Received Version: ${item.version} at ${item.updatedAt}",
-                        style = MaterialTheme.typography.bodyLarge,
-                    )
-                }
-            }
+            SyncRpc()
         }
     }
 }

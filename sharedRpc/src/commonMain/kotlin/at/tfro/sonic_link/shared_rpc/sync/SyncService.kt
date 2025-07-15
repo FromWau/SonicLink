@@ -9,6 +9,8 @@ import kotlinx.rpc.annotations.Rpc
 @Rpc
 interface SyncService {
     fun subscribeToCurrentVersion(): Flow<SyncVersionRpc>
+    fun subscribeToNews(): Flow<String>
+
     suspend fun sync(request: SyncRequest): SyncResponse
 
     suspend fun update(): SyncVersionRpc

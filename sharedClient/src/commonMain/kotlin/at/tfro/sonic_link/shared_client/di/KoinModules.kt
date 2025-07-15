@@ -31,10 +31,10 @@ expect val platformModule: Module
 
 val sharedModules = module {
     singleOf(::ImporterApiClient)
-    singleOf(::ImporterRemoteDataSourceImpl).bind<ImporterDataSource>()
-    singleOf(::ImporterRepositoryImpl).bind<ImporterRepository>()
+    singleOf(::ImporterRemoteDataSourceImpl) bind ImporterDataSource::class
+    singleOf(::ImporterRepositoryImpl) bind ImporterRepository::class
 
-    singleOf(::SettingRepositoryImpl).bind<SettingRepository>()
+    singleOf(::SettingRepositoryImpl) bind SettingRepository::class
 
     single {
         get<DatabaseFactory>().create()
@@ -48,7 +48,7 @@ val sharedModules = module {
 
 
 val coreModule = module {
-    singleOf(::DebugLogger).bind<Logger>()
+    singleOf(::DebugLogger) bind Logger::class
     single<HttpClient> { HttpClientFactory.create(get(), get()) }
 }
 

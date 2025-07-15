@@ -27,14 +27,11 @@ kotlin {
 
     sourceSets {
         androidMain.dependencies {
-            implementation(libs.koin.android)
             implementation(libs.ktor.client.okhttp)
         }
 
         commonMain.dependencies {
             implementation(projects.interim)
-
-            implementation(libs.koin.core)
 
             implementation(libs.bundles.ktor.client)
 

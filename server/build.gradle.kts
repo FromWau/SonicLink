@@ -25,6 +25,8 @@ dependencies {
     implementation(libs.bundles.ktor.client)
     implementation(libs.ktor.server.core)
     implementation(libs.ktor.server.netty)
+    implementation(libs.ktor.server.cors.jvm)
+    implementation(libs.ktor.server.host.common.jvm)
 
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.datetime)
@@ -36,6 +38,9 @@ dependencies {
     implementation(libs.kotlinx.rpc.krpc.ktor.server)
 
     implementation(libs.koin.core)
+    implementation("io.insert-koin:koin-annotations:2.1.0")
+    ksp("io.insert-koin:koin-ksp-compiler:2.1.0")
+
     implementation(libs.koin.ktor)
 
     implementation(libs.typesafeConfig)

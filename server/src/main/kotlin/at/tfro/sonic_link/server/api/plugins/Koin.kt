@@ -20,17 +20,19 @@ import at.tfro.sonic_link.server.db.dao.ArtistDao
 import at.tfro.sonic_link.server.db.dao.MediaDao
 import at.tfro.sonic_link.server.db.getAppDatabase
 import at.tfro.sonic_link.server.features.importer.Importer
-import at.tfro.sonic_link.server.sync.domain.SyncServiceImpl
 import at.tfro.sonic_link.server.sync.data.SyncRepositoryImpl
 import at.tfro.sonic_link.server.sync.data.database.SyncDao
 import at.tfro.sonic_link.server.sync.data.database.SyncDatabase
 import at.tfro.sonic_link.server.sync.data.database.getSyncDatabase
+import at.tfro.sonic_link.server.sync.domain.SyncServiceImpl
 import at.tfro.sonic_link.server.sync.domain.repository.SyncRepository
+import at.tfro.sonic_link.shared_rpc.sync.SyncService
 import io.ktor.client.HttpClient
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import org.koin.core.logger.Level
 import org.koin.core.logger.MESSAGE
+import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
@@ -44,7 +46,7 @@ val coreModule = module {
             get<ServerSettings>().dataDir
         ).create()
     }
-    singleOf(::DebugLogger).bind<Logger>()
+    singleOf(::DebugLogger) bind Logger::class
     single<HttpClient> { HttpClientFactory.create(get(), get()) }
 }
 
@@ -54,13 +56,14 @@ val serverModule = module {
     single<AlbumDao> { get<AppDatabase>().albumDao() }
     single<ArtistDao> { get<AppDatabase>().artistDao() }
 
-    single<MediaRepository> { MediaRepositoryImpl(get()) }
+    singleOf(::MediaRepositoryImpl) bind MediaRepository::class
 
     single { getSyncDatabase() }
     single<SyncDao> { get<SyncDatabase>().syncDao() }
-    single<SyncRepository> { SyncRepositoryImpl(get(), get()) }
 
-    singleOf(::SyncServiceImpl)
+    singleOf(::SyncRepositoryImpl) bind SyncRepository::class
+    factoryOf(::SyncServiceImpl) bind SyncService::class
+
     singleOf(::MusicbrainzApi)
     singleOf(::Importer)
 }
