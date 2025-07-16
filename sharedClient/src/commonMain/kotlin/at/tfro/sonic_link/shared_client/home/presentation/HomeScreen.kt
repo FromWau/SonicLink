@@ -3,15 +3,19 @@ package at.tfro.sonic_link.shared_client.home.presentation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -32,6 +36,7 @@ import at.tfro.sonic_link.shared_rpc.sync.SyncService
 import at.tfro.sonic_link.shared_rpc.sync.model.SyncVersionRpc
 import io.ktor.client.HttpClient
 import io.ktor.http.encodedPath
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import kotlinx.rpc.krpc.ktor.client.installKrpc
 import kotlinx.rpc.krpc.ktor.client.rpc
@@ -68,49 +73,6 @@ fun HomeScreenRoot(
         onNav = onNav,
     )
 }
-
-@Composable
-fun SyncRpc() {
-    var serviceOrNull: SyncService? by remember { mutableStateOf(null) }
-
-    LaunchedEffect(Unit) {
-        serviceOrNull = client.rpc {
-            url {
-                host = "127.0.0.1"
-                port = 8080
-                encodedPath = "/sync"
-            }
-
-            rpcConfig {
-                serialization {
-                    json()
-                }
-            }
-        }.withService()
-    }
-
-    val service = serviceOrNull // for smart casting
-
-    if (service != null) {
-        val receivedVersions = remember { mutableStateListOf<SyncVersionRpc>() }
-
-        LaunchedEffect(service) {
-            service.subscribeToCurrentVersion().collect {
-                receivedVersions.add(it)
-            }
-        }
-
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            receivedVersions.forEach {
-                Text("Version: ${it.version} at ${it.updatedAt}")
-            }
-        }
-    }
-}
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -157,6 +119,70 @@ fun HomeScreen(
             )
 
             SyncRpc()
+        }
+    }
+}
+
+@Composable
+fun SyncRpc() {
+    var serviceOrNull: SyncService? by remember { mutableStateOf(null) }
+
+    LaunchedEffect(Unit) {
+        serviceOrNull = client.rpc {
+            url {
+                host = "127.0.0.1"
+                port = 8080
+                encodedPath = "/sync"
+            }
+
+            rpcConfig {
+                serialization {
+                    json()
+                }
+            }
+        }.withService()
+    }
+
+    val service = serviceOrNull // for smart casting
+
+    if (service != null) {
+        val scope = rememberCoroutineScope()
+        val receivedVersions = remember { mutableStateListOf<SyncVersionRpc>() }
+
+        LaunchedEffect(service) {
+            service.subscribeToCurrentVersion()
+                .filterNotNull()
+                .collect {
+                    receivedVersions.add(it)
+                }
+        }
+
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            TextButton(
+                onClick = {
+                    scope.launch {
+                        service.update()
+                    }
+                },
+            ) {
+                Text("Trigger Sync Update")
+            }
+
+            HorizontalDivider()
+
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                receivedVersions.forEach {
+                    Text("Version: ${it.version} at ${it.updatedAt}")
+                }
+            }
         }
     }
 }

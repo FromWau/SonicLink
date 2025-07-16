@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface SyncRepository {
     suspend fun getCurrentSyncVersion(): SyncVersion?
-    fun getCurrentSyncVersionFlow(): Flow<SyncVersion>
+    fun getCurrentSyncVersionFlow(): Flow<SyncVersion?>
 
     suspend fun update(): SyncVersion
 }

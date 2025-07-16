@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "3dd74f8d5dd69c4fb3011f19ade41c9b",
+    "identityHash": "55083c1c4eb1b9b840de20d46fdefbea",
     "entities": [
       {
         "tableName": "sync_version",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `updated_at` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `updated_at` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -17,7 +17,7 @@
           {
             "fieldPath": "updatedAt",
             "columnName": "updated_at",
-            "affinity": "INTEGER",
+            "affinity": "TEXT",
             "notNull": true
           }
         ],
@@ -31,7 +31,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3dd74f8d5dd69c4fb3011f19ade41c9b')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '55083c1c4eb1b9b840de20d46fdefbea')"
     ]
   }
 }

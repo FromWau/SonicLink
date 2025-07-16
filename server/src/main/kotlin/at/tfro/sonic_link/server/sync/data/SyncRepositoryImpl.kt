@@ -21,7 +21,7 @@ class SyncRepositoryImpl(
         dao.getCurrentSyncVersion()?.toDomain()
 
     override fun getCurrentSyncVersionFlow() =
-        dao.getCurrentSyncVersionFlow().map { it.toDomain() }
+        dao.getCurrentSyncVersionFlow().map { it?.toDomain() }
 
     // Fake update for testing the db and client connection
     override suspend fun update(): SyncVersion =

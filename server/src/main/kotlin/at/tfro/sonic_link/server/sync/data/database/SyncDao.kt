@@ -20,7 +20,7 @@ interface SyncDao {
         ORDER BY id DESC
         LIMIT 1
     """)
-    fun getCurrentSyncVersionFlow(): Flow<SyncVersionEntity>
+    fun getCurrentSyncVersionFlow(): Flow<SyncVersionEntity?>
 
     @Insert
     suspend fun insert(syncVersion: SyncVersionEntity)

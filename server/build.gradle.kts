@@ -38,8 +38,6 @@ dependencies {
     implementation(libs.kotlinx.rpc.krpc.ktor.server)
 
     implementation(libs.koin.core)
-    implementation("io.insert-koin:koin-annotations:2.1.0")
-    ksp("io.insert-koin:koin-ksp-compiler:2.1.0")
 
     implementation(libs.koin.ktor)
 
