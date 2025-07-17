@@ -12,17 +12,13 @@ import at.tfro.sonic_link.core.logger.w
 import at.tfro.sonic_link.core.musicbrainz_api.MusicbrainzApi
 import at.tfro.sonic_link.core.network.HttpClientFactory
 import at.tfro.sonic_link.server.ServerSettings
-import at.tfro.sonic_link.server.data.MediaRepository
-import at.tfro.sonic_link.server.data.MediaRepositoryImpl
-import at.tfro.sonic_link.server.db.AppDatabase
-import at.tfro.sonic_link.server.db.dao.AlbumDao
-import at.tfro.sonic_link.server.db.dao.ArtistDao
-import at.tfro.sonic_link.server.db.dao.MediaDao
-import at.tfro.sonic_link.server.db.getAppDatabase
 import at.tfro.sonic_link.server.features.importer.Importer
 import at.tfro.sonic_link.server.sync.data.SyncRepositoryImpl
-import at.tfro.sonic_link.server.sync.data.database.SyncDao
 import at.tfro.sonic_link.server.sync.data.database.SyncDatabase
+import at.tfro.sonic_link.server.sync.data.database.dao.AlbumDao
+import at.tfro.sonic_link.server.sync.data.database.dao.ArtistDao
+import at.tfro.sonic_link.server.sync.data.database.dao.RecordDao
+import at.tfro.sonic_link.server.sync.data.database.dao.SyncVersionDao
 import at.tfro.sonic_link.server.sync.data.database.getSyncDatabase
 import at.tfro.sonic_link.server.sync.domain.SyncServiceImpl
 import at.tfro.sonic_link.server.sync.domain.repository.SyncRepository
@@ -51,15 +47,11 @@ val coreModule = module {
 }
 
 val serverModule = module {
-    single { getAppDatabase() }
-    single<MediaDao> { get<AppDatabase>().mediaDao() }
-    single<AlbumDao> { get<AppDatabase>().albumDao() }
-    single<ArtistDao> { get<AppDatabase>().artistDao() }
-
-    singleOf(::MediaRepositoryImpl) bind MediaRepository::class
-
     single { getSyncDatabase() }
-    single<SyncDao> { get<SyncDatabase>().syncDao() }
+    single<SyncVersionDao> { get<SyncDatabase>().syncVersionDao() }
+    single<ArtistDao> { get<SyncDatabase>().artistDao() }
+    single<AlbumDao> { get<SyncDatabase>().albumDao() }
+    single<RecordDao> { get<SyncDatabase>().recordDao() }
 
     singleOf(::SyncRepositoryImpl) bind SyncRepository::class
     factoryOf(::SyncServiceImpl) bind SyncService::class

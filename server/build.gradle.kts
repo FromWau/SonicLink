@@ -17,7 +17,6 @@ application {
 }
 
 dependencies {
-    implementation(projects.interim)
     implementation(projects.core)
     implementation(projects.sharedRpc)
 

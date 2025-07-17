@@ -3,6 +3,7 @@ package at.tfro.sonic_link.server.sync.domain
 import at.tfro.sonic_link.core.logger.Logger
 import at.tfro.sonic_link.core.logger.i
 import at.tfro.sonic_link.core.logger.tag
+import at.tfro.sonic_link.server.sync.domain.mapper.toDomain
 import at.tfro.sonic_link.server.sync.domain.mapper.toRpc
 import at.tfro.sonic_link.server.sync.domain.repository.SyncRepository
 import at.tfro.sonic_link.shared_rpc.sync.SyncService
@@ -25,11 +26,20 @@ class SyncServiceImpl(
         return repo.getCurrentSyncVersionFlow().map { it?.toRpc() }
     }
 
-    override suspend fun sync(request: SyncRequest): SyncResponse =
-        TODO("Not yet implemented")
+    override suspend fun sync(request: SyncRequest): SyncResponse {
+        logger.tag(LOG_TAG)
+            .i { "Sync request received, from: ${request.currentVersion.version} -> ${request.targetVersion.version}" }
+
+        val delta = repo.generateDelta(
+            currentVersion = request.currentVersion.toDomain(),
+            targetVersion = request.targetVersion.toDomain()
+        )
+        TODO()
+    }
+
 
     override suspend fun update(): SyncVersionRpc {
         logger.tag(LOG_TAG).i { "Sync update triggered" }
-        return repo.update().toRpc()
+        return repo.versionBump().toRpc()
     }
 }

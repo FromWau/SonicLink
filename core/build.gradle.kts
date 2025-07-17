@@ -31,8 +31,6 @@ kotlin {
         }
 
         commonMain.dependencies {
-            implementation(projects.interim)
-
             implementation(libs.bundles.ktor.client)
 
             implementation(libs.kotlinx.coroutines.core)

@@ -8,3 +8,9 @@ fun SyncVersion.toRpc(): SyncVersionRpc =
         version = this.version,
         updatedAt = this.updatedAt,
     )
+
+fun SyncVersionRpc.toDomain(): SyncVersion =
+    SyncVersion(
+        version = this.version,
+        updatedAt = this.updatedAt,
+    )
