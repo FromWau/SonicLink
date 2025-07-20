@@ -42,7 +42,7 @@ import coil3.compose.AsyncImagePainter
 import coil3.compose.rememberAsyncImagePainter
 import org.jetbrains.compose.resources.painterResource
 import soniclink.sharedclient.generated.resources.Res
-import soniclink.sharedclient.generated.resources.compose_multiplatform
+import soniclink.sharedclient.generated.resources.image_missing
 
 
 @Composable
@@ -104,7 +104,7 @@ fun MusicListItem(
                     else -> {
                         Image(
                             painter = if (result.isSuccess) painter else {
-                                painterResource(Res.drawable.compose_multiplatform)
+                                painterResource(Res.drawable.image_missing)
                             },
                             contentDescription = music.title,
                             contentScale = if (result.isSuccess) {
