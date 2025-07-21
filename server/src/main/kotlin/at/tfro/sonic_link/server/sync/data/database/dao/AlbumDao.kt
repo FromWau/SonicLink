@@ -8,7 +8,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import at.tfro.sonic_link.server.sync.data.model.AlbumEntity
-import at.tfro.sonic_link.server.sync.data.model.AlbumWithArtistEntity
+import at.tfro.sonic_link.server.sync.data.model.AlbumWithRelations
 
 @Dao
 interface AlbumDao {
@@ -23,7 +23,7 @@ interface AlbumDao {
 
     @Transaction
     @Query("SELECT * FROM albums")
-    suspend fun getAll(): List<AlbumWithArtistEntity>
+    suspend fun getAll(): List<AlbumWithRelations>
 
     @Query("DELETE FROM albums")
     suspend fun clear()

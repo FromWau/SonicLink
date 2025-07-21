@@ -7,6 +7,6 @@ import kotlinx.datetime.LocalDateTime
 
 @Entity(tableName = "sync_versions")
 data class SyncVersionEntity(
-    @PrimaryKey(autoGenerate = true) val id: Long = 0L,
-    @ColumnInfo(name = "updated_at") val updatedAt: LocalDateTime,
+    @PrimaryKey(autoGenerate = true) val version: Long = 0L,
+    @ColumnInfo(name = "released_at") val releasedAt: LocalDateTime,
 )

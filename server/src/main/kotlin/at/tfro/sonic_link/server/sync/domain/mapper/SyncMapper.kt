@@ -6,11 +6,11 @@ import at.tfro.sonic_link.shared_rpc.sync.model.SyncVersionRpc
 fun SyncVersion.toRpc(): SyncVersionRpc =
     SyncVersionRpc(
         version = this.version,
-        updatedAt = this.updatedAt,
+        updatedAt = this.releasedAt,
     )
 
 fun SyncVersionRpc.toDomain(): SyncVersion =
     SyncVersion(
         version = this.version,
-        updatedAt = this.updatedAt,
+        releasedAt = this.updatedAt,
     )

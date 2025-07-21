@@ -7,6 +7,7 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import androidx.room.Relation
+import kotlinx.datetime.LocalDateTime
 import kotlin.uuid.Uuid
 
 @Entity(
@@ -16,12 +17,19 @@ import kotlin.uuid.Uuid
             entity = ArtistEntity::class,
             parentColumns = ["id"],
             childColumns = ["artist_id"],
-            onDelete = ForeignKey.CASCADE
-        )
+            onDelete = ForeignKey.CASCADE,
+        ),
+        ForeignKey(
+            entity = SyncVersionEntity::class,
+            parentColumns = ["version"],
+            childColumns = ["sync_version_version"],
+            onDelete = ForeignKey.CASCADE,
+        ),
     ],
     indices = [
         Index(value = ["artist_id"]),
-        Index(value = ["path"], unique = true)
+        Index(value = ["sync_version_version"]),
+        Index(value = ["path"], unique = true),
     ],
 )
 data class AlbumEntity(
@@ -31,9 +39,14 @@ data class AlbumEntity(
     @ColumnInfo("artist_id") val artistId: Uuid,
     @ColumnInfo("cover_art_path") val coverArtPath: String?,
     @ColumnInfo("path") val path: String,
+
+    // Sync metadata:
+    @ColumnInfo("sync_version_version") val syncVersionVersion: Long,
+    @ColumnInfo("last_modified") val lastModified: LocalDateTime,
+    @ColumnInfo("is_deleted") val isDeleted: Boolean = false,
 )
 
-data class AlbumWithArtistEntity(
+data class AlbumWithRelations(
     @Embedded val album: AlbumEntity,
 
     @Relation(
@@ -41,4 +54,10 @@ data class AlbumWithArtistEntity(
         entityColumn = "id"
     )
     val artist: ArtistEntity,
+
+    @Relation(
+        parentColumn = "sync_version_version",
+        entityColumn = "version"
+    )
+    val syncVersion: SyncVersionEntity,
 )

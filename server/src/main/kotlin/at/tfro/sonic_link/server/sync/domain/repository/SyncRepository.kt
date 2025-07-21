@@ -7,8 +7,10 @@ import at.tfro.sonic_link.server.sync.domain.model.SyncVersion
 import kotlinx.coroutines.flow.Flow
 
 interface SyncRepository {
-    fun getCurrentSyncVersionFlow(): Flow<SyncVersion?>
+    suspend fun getAllSyncVersions(): List<SyncVersion>
+    suspend fun findByVersion(version: Long): SyncVersion?
 
+    fun getCurrentSyncVersionFlow(): Flow<SyncVersion?>
     suspend fun generateDelta(currentVersion: SyncVersion, targetVersion: SyncVersion): SyncVersion
 
     suspend fun versionBump(): SyncVersion

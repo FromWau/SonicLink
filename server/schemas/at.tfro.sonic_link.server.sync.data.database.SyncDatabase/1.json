@@ -2,21 +2,21 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "b7571465917238f3ac464ce8c65f61a4",
+    "identityHash": "9623f1f8d163a151386c4e887a05c263",
     "entities": [
       {
         "tableName": "sync_versions",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `updated_at` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`version` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `released_at` TEXT NOT NULL)",
         "fields": [
           {
-            "fieldPath": "id",
-            "columnName": "id",
+            "fieldPath": "version",
+            "columnName": "version",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
-            "fieldPath": "updatedAt",
-            "columnName": "updated_at",
+            "fieldPath": "releasedAt",
+            "columnName": "released_at",
             "affinity": "TEXT",
             "notNull": true
           }
@@ -24,13 +24,13 @@
         "primaryKey": {
           "autoGenerate": true,
           "columnNames": [
-            "id"
+            "version"
           ]
         }
       },
       {
         "tableName": "artists",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `cover_art_path` TEXT, `path` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `cover_art_path` TEXT, `path` TEXT NOT NULL, `sync_version_version` INTEGER NOT NULL, `last_modified` TEXT NOT NULL, `is_deleted` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`sync_version_version`) REFERENCES `sync_versions`(`version`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -54,6 +54,24 @@
             "columnName": "path",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "syncVersionVersion",
+            "columnName": "sync_version_version",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastModified",
+            "columnName": "last_modified",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isDeleted",
+            "columnName": "is_deleted",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -71,12 +89,34 @@
             ],
             "orders": [],
             "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_artists_path` ON `${TABLE_NAME}` (`path`)"
+          },
+          {
+            "name": "index_artists_sync_version_version",
+            "unique": false,
+            "columnNames": [
+              "sync_version_version"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_artists_sync_version_version` ON `${TABLE_NAME}` (`sync_version_version`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "sync_versions",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "sync_version_version"
+            ],
+            "referencedColumns": [
+              "version"
+            ]
           }
         ]
       },
       {
         "tableName": "albums",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `title` TEXT NOT NULL, `artist_id` TEXT NOT NULL, `cover_art_path` TEXT, `path` TEXT NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`artist_id`) REFERENCES `artists`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `title` TEXT NOT NULL, `artist_id` TEXT NOT NULL, `cover_art_path` TEXT, `path` TEXT NOT NULL, `sync_version_version` INTEGER NOT NULL, `last_modified` TEXT NOT NULL, `is_deleted` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`artist_id`) REFERENCES `artists`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`sync_version_version`) REFERENCES `sync_versions`(`version`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -106,6 +146,24 @@
             "columnName": "path",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "syncVersionVersion",
+            "columnName": "sync_version_version",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastModified",
+            "columnName": "last_modified",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isDeleted",
+            "columnName": "is_deleted",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -123,6 +181,15 @@
             ],
             "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_albums_artist_id` ON `${TABLE_NAME}` (`artist_id`)"
+          },
+          {
+            "name": "index_albums_sync_version_version",
+            "unique": false,
+            "columnNames": [
+              "sync_version_version"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_albums_sync_version_version` ON `${TABLE_NAME}` (`sync_version_version`)"
           },
           {
             "name": "index_albums_path",
@@ -145,12 +212,23 @@
             "referencedColumns": [
               "id"
             ]
+          },
+          {
+            "table": "sync_versions",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "sync_version_version"
+            ],
+            "referencedColumns": [
+              "version"
+            ]
           }
         ]
       },
       {
         "tableName": "records",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `title` TEXT NOT NULL, `album_id` TEXT NOT NULL, `artist_id` TEXT NOT NULL, `path` TEXT NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`album_id`) REFERENCES `albums`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`artist_id`) REFERENCES `artists`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `title` TEXT NOT NULL, `album_id` TEXT NOT NULL, `artist_id` TEXT NOT NULL, `path` TEXT NOT NULL, `sync_version_version` INTEGER NOT NULL, `last_modified` TEXT NOT NULL, `is_deleted` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`album_id`) REFERENCES `albums`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`artist_id`) REFERENCES `artists`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`sync_version_version`) REFERENCES `sync_versions`(`version`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -180,6 +258,24 @@
             "fieldPath": "path",
             "columnName": "path",
             "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "syncVersionVersion",
+            "columnName": "sync_version_version",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastModified",
+            "columnName": "last_modified",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isDeleted",
+            "columnName": "is_deleted",
+            "affinity": "INTEGER",
             "notNull": true
           }
         ],
@@ -216,6 +312,15 @@
             ],
             "orders": [],
             "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_records_path` ON `${TABLE_NAME}` (`path`)"
+          },
+          {
+            "name": "index_records_sync_version_version",
+            "unique": false,
+            "columnNames": [
+              "sync_version_version"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_records_sync_version_version` ON `${TABLE_NAME}` (`sync_version_version`)"
           }
         ],
         "foreignKeys": [
@@ -240,13 +345,24 @@
             "referencedColumns": [
               "id"
             ]
+          },
+          {
+            "table": "sync_versions",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "sync_version_version"
+            ],
+            "referencedColumns": [
+              "version"
+            ]
           }
         ]
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b7571465917238f3ac464ce8c65f61a4')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '9623f1f8d163a151386c4e887a05c263')"
     ]
   }
 }

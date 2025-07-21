@@ -23,6 +23,12 @@ class SyncRepositoryImpl(
     private val albumDao: AlbumDao,
     private val recordDao: RecordDao,
 ) : SyncRepository {
+    override suspend fun getAllSyncVersions(): List<SyncVersion> =
+        syncVersionDao.getAllSyncVersions().map { it.toDomain() }
+
+    override suspend fun findByVersion(version: Long): SyncVersion? =
+        syncVersionDao.findByVersion(version)?.toDomain()
+
     override fun getCurrentSyncVersionFlow() =
         syncVersionDao.getCurrentSyncVersionFlow().map { it?.toDomain() }
 
@@ -36,7 +42,7 @@ class SyncRepositoryImpl(
     override suspend fun versionBump(): SyncVersion {
         return syncVersionDao.insertGetVersion(
             SyncVersionEntity(
-                updatedAt = Clock.System.now().toLocalDateTime(TimeZone.UTC)
+                releasedAt = Clock.System.now().toLocalDateTime(TimeZone.UTC)
             )
         )
             ?.toDomain()
@@ -44,8 +50,11 @@ class SyncRepositoryImpl(
     }
 
     override suspend fun insertRecord(record: Record) {
+        syncVersionDao.insert(record.artist.syncVersion.toEntity())
         artistDao.insert(record.artist.toEntity())
+        syncVersionDao.insert(record.album.syncVersion.toEntity())
         albumDao.insert(record.album.toEntity())
+        syncVersionDao.insert(record.syncVersion.toEntity())
         recordDao.insert(record.toEntity())
     }
     override suspend fun updateRecord(record: Record) = recordDao.update(record.toEntity())
@@ -53,7 +62,9 @@ class SyncRepositoryImpl(
     override suspend fun getAllRecords(): List<Record> = recordDao.getAllRecordsWithAlbumAndArtist().map { it.toDomain() }
 
     override suspend fun insertAlbum(album: Album) {
+        syncVersionDao.insert(album.artist.syncVersion.toEntity())
         artistDao.insert(album.artist.toEntity())
+        syncVersionDao.insert(album.syncVersion.toEntity())
         albumDao.insert(album.toEntity())
     }
     override suspend fun updateAlbum(album: Album) = albumDao.update(album.toEntity())
@@ -70,5 +81,13 @@ class SyncRepositoryImpl(
         recordDao.clear()
         albumDao.clear()
         artistDao.clear()
+
+        // Re-insert the initial sync version after clearing
+        syncVersionDao.insertGetVersion(
+            SyncVersionEntity(
+                version = 1L,
+                releasedAt = Clock.System.now().toLocalDateTime(TimeZone.UTC)
+            )
+        )
     }
 }

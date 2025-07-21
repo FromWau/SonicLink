@@ -1,5 +1,6 @@
 package at.tfro.sonic_link.server.sync.domain.model
 
+import kotlinx.datetime.LocalDateTime
 import kotlin.uuid.Uuid
 
 data class Album(
@@ -8,6 +9,10 @@ data class Album(
     val artist: Artist,
     val coverArtPath: String?,
     val path: String,
+
+    val syncVersion: SyncVersion,
+    val lastModified: LocalDateTime,
+    val isDeleted: Boolean,
 ) {
     fun toPrettyString(preSpacing: String = ""): String {
         return "Album {\n" +
@@ -16,6 +21,9 @@ data class Album(
                 "$preSpacing  artist=${artist.toPrettyString("$preSpacing  ")},\n" +
                 "$preSpacing  coverArtPath=$coverArtPath,\n" +
                 "$preSpacing  path=$path\n" +
+                "$preSpacing  syncVersion=${syncVersion.toPrettyString("$preSpacing  ")},\n" +
+                "$preSpacing  lastModified=$lastModified,\n" +
+                "$preSpacing  isDeleted=$isDeleted\n" +
                 "$preSpacing}"
     }
 }
