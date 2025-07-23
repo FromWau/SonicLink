@@ -9,18 +9,16 @@ import at.tfro.sonic_link.server.api.routes.triage.triageRoutes
 import at.tfro.sonic_link.server.sync.domain.model.Album
 import at.tfro.sonic_link.server.sync.domain.model.Artist
 import at.tfro.sonic_link.server.sync.domain.model.Record
-import at.tfro.sonic_link.server.sync.domain.model.SyncVersion
-import at.tfro.sonic_link.server.sync.domain.repository.SyncRepository
+import at.tfro.sonic_link.server.sync.domain.repository.AlbumRepository
+import at.tfro.sonic_link.server.sync.domain.repository.ArtistRepository
+import at.tfro.sonic_link.server.sync.domain.repository.GlobalChangeLogRepository
+import at.tfro.sonic_link.server.sync.domain.repository.RecordRepository
 import at.tfro.sonic_link.server.sync.routing.syncRoutes
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
 import io.ktor.server.response.respond
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.datetime.Clock
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 import org.koin.ktor.ext.inject
 import kotlin.uuid.Uuid
 
@@ -61,22 +59,13 @@ fun Application.configureRouting() {
 
         get("/initData") {
             try {
-                val syncRepo by inject<SyncRepository>()
-
-                val syncVersion = SyncVersion(
-                    version = 1L,
-                    releasedAt = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
-                )
+                val recordRepo by inject<RecordRepository>()
 
                 val artistNirvana = Artist(
                     id = Uuid.random(),
                     name = "Nirvana",
                     coverArtPath = null,
                     path = "Nirvana",
-                    syncVersion = syncVersion,
-                    lastModified = Clock.System.now()
-                        .toLocalDateTime(TimeZone.currentSystemDefault()),
-                    isDeleted = false
                 )
 
                 val albumBleach = Album(
@@ -85,10 +74,6 @@ fun Application.configureRouting() {
                     artist = artistNirvana,
                     coverArtPath = null,
                     path = "Nirvana/Bleach",
-                    syncVersion = syncVersion,
-                    lastModified = Clock.System.now()
-                        .toLocalDateTime(TimeZone.currentSystemDefault()),
-                    isDeleted = false
                 )
 
                 val recordSmellsLikeTeenSpirit = Record(
@@ -97,12 +82,8 @@ fun Application.configureRouting() {
                     album = albumBleach,
                     artist = artistNirvana,
                     path = "Nirvana/Bleach/SmellsLikeTeenSpirit.mp3",
-                    syncVersion = syncVersion,
-                    lastModified = Clock.System.now()
-                        .toLocalDateTime(TimeZone.currentSystemDefault()),
-                    isDeleted = false
                 )
-                syncRepo.insertRecord(recordSmellsLikeTeenSpirit)
+                recordRepo.insertRecord(recordSmellsLikeTeenSpirit)
 
                 val recordComeAsYouAre = Record(
                     id = Uuid.random(),
@@ -110,12 +91,8 @@ fun Application.configureRouting() {
                     album = albumBleach,
                     artist = artistNirvana,
                     path = "Nirvana/Bleach/ComeAsYouAre.mp3",
-                    syncVersion = syncVersion,
-                    lastModified = Clock.System.now()
-                        .toLocalDateTime(TimeZone.currentSystemDefault()),
-                    isDeleted = false
                 )
-                syncRepo.insertRecord(recordComeAsYouAre)
+                recordRepo.insertRecord(recordComeAsYouAre)
 
                 val recordLithium = Record(
                     id = Uuid.random(),
@@ -123,12 +100,8 @@ fun Application.configureRouting() {
                     album = albumBleach,
                     artist = artistNirvana,
                     path = "Nirvana/Bleach/Lithium.mp3",
-                    syncVersion = syncVersion,
-                    lastModified = Clock.System.now()
-                        .toLocalDateTime(TimeZone.currentSystemDefault()),
-                    isDeleted = false
                 )
-                syncRepo.insertRecord(recordLithium)
+                recordRepo.insertRecord(recordLithium)
 
                 val recordInBloom = Record(
                     id = Uuid.random(),
@@ -136,12 +109,8 @@ fun Application.configureRouting() {
                     album = albumBleach,
                     artist = artistNirvana,
                     path = "Nirvana/Bleach/InBloom.mp3",
-                    syncVersion = syncVersion,
-                    lastModified = Clock.System.now()
-                        .toLocalDateTime(TimeZone.currentSystemDefault()),
-                    isDeleted = false
                 )
-                syncRepo.insertRecord(recordInBloom)
+                recordRepo.insertRecord(recordInBloom)
 
                 val recordPolly = Record(
                     id = Uuid.random(),
@@ -149,13 +118,8 @@ fun Application.configureRouting() {
                     album = albumBleach,
                     artist = artistNirvana,
                     path = "Nirvana/Bleach/Polly.mp3",
-                    syncVersion = syncVersion,
-                    lastModified = Clock.System.now()
-                        .toLocalDateTime(TimeZone.currentSystemDefault()),
-                    isDeleted = false
                 )
-                syncRepo.insertRecord(recordPolly)
-
+                recordRepo.insertRecord(recordPolly)
 
 
                 logger.tag("initData").i { "initial data setup successful" }
@@ -172,8 +136,8 @@ fun Application.configureRouting() {
 
         get("/artists") {
             try {
-                val syncRepo by inject<SyncRepository>()
-                val artists = syncRepo.getAllArtists()
+                val artistRepo by inject<ArtistRepository>()
+                val artists = artistRepo.getAllArtists()
 
                 if (artists.isEmpty()) {
                     logger.tag("artists").i { "No artists found." }
@@ -198,8 +162,8 @@ fun Application.configureRouting() {
 
         get("/albums") {
             try {
-                val syncRepo by inject<SyncRepository>()
-                val albums = syncRepo.getAllAlbums()
+                val albumRepo by inject<AlbumRepository>()
+                val albums = albumRepo.getAllAlbums()
 
                 if (albums.isEmpty()) {
                     logger.tag("albums").i { "No albums found." }
@@ -224,8 +188,8 @@ fun Application.configureRouting() {
 
         get("/records") {
             try {
-                val syncRepo by inject<SyncRepository>()
-                val records = syncRepo.getAllRecords()
+                val recordRepo by inject<RecordRepository>()
+                val records = recordRepo.getAllRecords()
 
                 if (records.isEmpty()) {
                     logger.tag("records").i { "No records found." }
@@ -250,8 +214,8 @@ fun Application.configureRouting() {
 
         get("/sync/versions") {
             try {
-                val syncRepo by inject<SyncRepository>()
-                val versions = syncRepo.getAllSyncVersions()
+                val versionRepo by inject<GlobalChangeLogRepository>()
+                val versions = versionRepo.getAllVersions()
 
                 if (versions.isEmpty()) {
                     call.respond(HttpStatusCode.OK, "No sync versions found.")
@@ -272,8 +236,8 @@ fun Application.configureRouting() {
 
         get("/sync/current") {
             try {
-                val syncRepo by inject<SyncRepository>()
-                val currentSyncVersion = syncRepo.getCurrentSyncVersionFlow().firstOrNull()
+                val versionRepo by inject<GlobalChangeLogRepository>()
+                val currentSyncVersion = versionRepo.getLatestVersion()
 
                 if (currentSyncVersion == null) {
                     call.respond(HttpStatusCode.NotFound, "No current sync version found.")
@@ -289,54 +253,15 @@ fun Application.configureRouting() {
             }
         }
 
-        get("/delta/{sourceVersion}/{targetVersion}") {
-            val sourceVersionParam = call.parameters["sourceVersion"]
-            val targetVersionParam = call.parameters["targetVersion"]
-
-            if (sourceVersionParam == null || targetVersionParam == null) {
-                call.respond(
-                    HttpStatusCode.BadRequest,
-                    "Both source and target versions must be provided."
-                )
-                return@get
-            }
-
-            try {
-                val syncRepo by inject<SyncRepository>()
-                val sourceVersion = SyncVersion(
-                    version = sourceVersionParam.toLong(),
-                    releasedAt = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
-                )
-                val targetVersion = SyncVersion(
-                    version = targetVersionParam.toLong(),
-                    releasedAt = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
-                )
-
-                val sourceSyncVersion = syncRepo.findByVersion(sourceVersion.version)
-                val targetSyncVersion = syncRepo.findByVersion(targetVersion.version)
-                if (sourceSyncVersion == null || targetSyncVersion == null) {
-                    call.respond(
-                        HttpStatusCode.NotFound,
-                        "One or both sync versions not found."
-                    )
-                    return@get
-                }
-
-
-                val delta = syncRepo.generateDelta(sourceVersion, targetVersion)
-                call.respond(HttpStatusCode.OK, delta.toPrettyString())
-            } catch (e: Exception) {
-                call.respond(
-                    HttpStatusCode.InternalServerError,
-                    "Failed to generate delta: ${e.message}"
-                )
-            }
-        }
-
         get("/yeet") {
             try {
-                val syncRepo by inject<SyncRepository>()
-                syncRepo.clearAllData()
+                val albumRepo by inject<AlbumRepository>()
+                val artistRepo by inject<ArtistRepository>()
+                val recordRepo by inject<RecordRepository>()
+
+                albumRepo.clearAlbums()
+                artistRepo.clearArtists()
+                recordRepo.clearRecords()
 
                 call.respond(HttpStatusCode.OK, "All data cleared successfully.")
             } catch (e: Exception) {

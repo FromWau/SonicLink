@@ -7,11 +7,15 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import at.tfro.sonic_link.server.sync.data.model.ArtistEntity
+import kotlin.uuid.Uuid
 
 @Dao
 interface ArtistDao {
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(artist: ArtistEntity)
+
+    @Query("SELECT * FROM artists WHERE path = :path")
+    suspend fun getByPath(path: String): ArtistEntity?
 
     @Update
     suspend fun update(artist: ArtistEntity)

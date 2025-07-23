@@ -9,11 +9,15 @@ import androidx.room.Transaction
 import androidx.room.Update
 import at.tfro.sonic_link.server.sync.data.model.AlbumEntity
 import at.tfro.sonic_link.server.sync.data.model.AlbumWithRelations
+import kotlin.uuid.Uuid
 
 @Dao
 interface AlbumDao {
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(album: AlbumEntity)
+
+    @Query("SELECT * FROM albums WHERE path = :path")
+    suspend fun getByPath(path: String): AlbumEntity?
 
     @Update
     suspend fun update(album: AlbumEntity)

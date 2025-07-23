@@ -7,34 +7,33 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import androidx.room.Relation
+import kotlinx.datetime.Instant
 import kotlin.uuid.Uuid
 
 @Entity(
-    tableName = "albums",
+    tableName = "artist_change_log",
     foreignKeys = [
         ForeignKey(
             entity = ArtistEntity::class,
             parentColumns = ["id"],
             childColumns = ["artist_id"],
             onDelete = ForeignKey.CASCADE,
-        ),
+        )
     ],
     indices = [
         Index(value = ["artist_id"]),
-        Index(value = ["path"], unique = true),
+        Index(value = ["timestamp"]),
     ],
 )
-data class AlbumEntity(
-    @PrimaryKey
-    @ColumnInfo("id") val id: Uuid,
-    @ColumnInfo("title") val title: String,
+data class ArtistChangeLogEntity(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
     @ColumnInfo("artist_id") val artistId: Uuid,
-    @ColumnInfo("cover_art_path") val coverArtPath: String?,
-    @ColumnInfo("path") val path: String,
+    @ColumnInfo("operation") val operation: DeltaOperationEntity,
+    @ColumnInfo("timestamp") val timestamp: Instant,
 )
 
-data class AlbumWithRelations(
-    @Embedded val album: AlbumEntity,
+data class ArtistChangeLogWithArtist(
+    @Embedded val changeLog: ArtistChangeLogEntity,
 
     @Relation(
         parentColumn = "artist_id",
