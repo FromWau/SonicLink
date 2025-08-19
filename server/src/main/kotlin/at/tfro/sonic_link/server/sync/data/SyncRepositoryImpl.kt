@@ -13,10 +13,12 @@ import at.tfro.sonic_link.server.sync.domain.model.Record
 import at.tfro.sonic_link.server.sync.domain.model.SyncVersion
 import at.tfro.sonic_link.server.sync.domain.repository.SyncRepository
 import kotlinx.coroutines.flow.map
-import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 class SyncRepositoryImpl(
     private val syncVersionDao: SyncVersionDao,
     private val artistDao: ArtistDao,
@@ -57,9 +59,11 @@ class SyncRepositoryImpl(
         syncVersionDao.insert(record.syncVersion.toEntity())
         recordDao.insert(record.toEntity())
     }
+
     override suspend fun updateRecord(record: Record) = recordDao.update(record.toEntity())
     override suspend fun deleteRecord(record: Record) = recordDao.delete(record.toEntity())
-    override suspend fun getAllRecords(): List<Record> = recordDao.getAllRecordsWithAlbumAndArtist().map { it.toDomain() }
+    override suspend fun getAllRecords(): List<Record> =
+        recordDao.getAllRecordsWithAlbumAndArtist().map { it.toDomain() }
 
     override suspend fun insertAlbum(album: Album) {
         syncVersionDao.insert(album.artist.syncVersion.toEntity())
@@ -67,6 +71,7 @@ class SyncRepositoryImpl(
         syncVersionDao.insert(album.syncVersion.toEntity())
         albumDao.insert(album.toEntity())
     }
+
     override suspend fun updateAlbum(album: Album) = albumDao.update(album.toEntity())
     override suspend fun deleteAlbum(album: Album) = albumDao.delete(album.toEntity())
     override suspend fun getAllAlbums(): List<Album> = albumDao.getAll().map { it.toDomain() }

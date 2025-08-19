@@ -47,7 +47,6 @@ dependencies {
     implementation(libs.sqlite.bundled)
 
     testImplementation(libs.ktor.server.test.host)
-    testImplementation(libs.kotlin.test.junit)
     testImplementation(libs.kotlinx.rpc.krpc.client)
     testImplementation(libs.kotlinx.rpc.krpc.ktor.client)
 }

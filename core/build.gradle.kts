@@ -38,6 +38,8 @@ kotlin {
 
             implementation(libs.room.runtime)
             implementation(libs.sqlite.bundled)
+
+            api(libs.koin.core)
         }
 
         jvmMain.dependencies {

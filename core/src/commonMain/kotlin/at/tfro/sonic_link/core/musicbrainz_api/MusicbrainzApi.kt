@@ -1,6 +1,6 @@
 package at.tfro.sonic_link.core.musicbrainz_api
 
-import at.tfro.sonic_link.core.logger.Logger
+import at.tfro.sonic_link.core.logger.Log
 import at.tfro.sonic_link.core.logger.d
 import at.tfro.sonic_link.core.logger.e
 import at.tfro.sonic_link.core.logger.tag
@@ -12,11 +12,10 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
 class MusicbrainzApi(
-    private val logger: Logger,
     private val client: HttpClient,
 ) {
     companion object {
-        private const val LOG_TAG = "MusicbrainzApi"
+        private const val TAG = "MusicbrainzApi"
         private const val BASE_URL = "https://musicbrainz.org/ws/2/recording"
     }
 
@@ -51,11 +50,11 @@ class MusicbrainzApi(
             try {
                 return@let json.decodeFromString<SearchResponse>(it)
             } catch (e: Exception) {
-                logger.tag(LOG_TAG).e { "Failed to parse response: ${e.message}" }
+                Log.tag(TAG).e { "Failed to parse response: ${e.message}" }
                 throw e
             }
         }
-        logger.tag(LOG_TAG).d { "Response: $body" }
+        Log.tag(TAG).d { "Response: $body" }
         return body
     }
 }
@@ -95,3 +94,10 @@ data class Artist(
     val sortName: String? = null,
     val disambiguation: String? = null,
 )
+
+sealed class Event<out T> {
+    data class Success<T>(val data: T) : Event<T>()
+    data class Failure(val code: Int, val body: String) : Event<Nothing>()
+    data class Error(val exception: Exception) : Event<Nothing>()
+    data object Timeout : Event<Nothing>()
+}

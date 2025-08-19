@@ -1,6 +1,6 @@
 package at.tfro.sonic_link.server.sync.domain
 
-import at.tfro.sonic_link.core.logger.Logger
+import at.tfro.sonic_link.core.logger.Log
 import at.tfro.sonic_link.core.logger.i
 import at.tfro.sonic_link.core.logger.tag
 import at.tfro.sonic_link.server.sync.domain.mapper.toDomain
@@ -15,19 +15,18 @@ import kotlinx.coroutines.flow.map
 
 class SyncServiceImpl(
     private val repo: SyncRepository,
-    private val logger: Logger,
 ) : SyncService {
     companion object {
-        const val LOG_TAG = "SyncService"
+        const val TAG = "SyncService"
     }
 
     override fun subscribeToCurrentVersion(): Flow<SyncVersionRpc?> {
-        logger.tag(LOG_TAG).i { "Subscribing to current sync version" }
+        Log.tag(TAG).i { "Subscribing to current sync version" }
         return repo.getCurrentSyncVersionFlow().map { it?.toRpc() }
     }
 
     override suspend fun sync(request: SyncRequest): SyncResponse {
-        logger.tag(LOG_TAG)
+        Log.tag(TAG)
             .i { "Sync request received, from: ${request.currentVersion.version} -> ${request.targetVersion.version}" }
 
         val delta = repo.generateDelta(
@@ -39,7 +38,7 @@ class SyncServiceImpl(
 
 
     override suspend fun update(): SyncVersionRpc {
-        logger.tag(LOG_TAG).i { "Sync update triggered" }
+        Log.tag(TAG).i { "Sync update triggered" }
         return repo.versionBump().toRpc()
     }
 }

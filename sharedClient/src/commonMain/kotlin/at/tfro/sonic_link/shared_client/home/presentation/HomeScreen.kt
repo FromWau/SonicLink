@@ -118,7 +118,7 @@ fun HomeScreen(
                 },
             )
 
-            SyncRpc()
+//            SyncRpc()
         }
     }
 }

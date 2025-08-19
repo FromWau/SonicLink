@@ -1,21 +1,24 @@
 @file:Suppress("unused")
+@file:OptIn(ExperimentalTime::class)
 
 package at.tfro.sonic_link.core.logger
 
-import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.number
 import kotlinx.datetime.toLocalDateTime
+import kotlin.time.ExperimentalTime
 
-// TODO: Find a way to use this in Compose context maybe with LocalContext?
+expect val Log: Logger
+
 interface Logger {
     fun log(tag: String, logLevel: LogLevel, lazyMessage: () -> String)
     fun log(tag: String, logLevel: LogLevel, throwable: Throwable)
 }
 
 fun Logger.tag(tag: String): TaggedLogger = TaggedLogger(tag, this)
-fun Logger.toLogString(tag: String, logLevel: LogLevel, lazyMessage: () -> String): String {
-    val timestamp = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+fun toLogString(tag: String, logLevel: LogLevel, lazyMessage: () -> String): String {
+    val timestamp = kotlin.time.Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
     val formattedDate = formatDateTime(timestamp)
     val level = logLevel.name.padEnd(5) // pad to 5 characters
 
@@ -23,8 +26,8 @@ fun Logger.toLogString(tag: String, logLevel: LogLevel, lazyMessage: () -> Strin
     return logMsg
 }
 
-fun Logger.toLogString(tag: String, logLevel: LogLevel, throwable: Throwable): String {
-    val timestamp = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+fun toLogString(tag: String, logLevel: LogLevel, throwable: Throwable): String {
+    val timestamp = kotlin.time.Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
     val formattedDate = formatDateTime(timestamp)
     val level = logLevel.name.padEnd(5) // pad to 5 characters
 
@@ -34,8 +37,8 @@ fun Logger.toLogString(tag: String, logLevel: LogLevel, throwable: Throwable): S
 
 private fun formatDateTime(dt: LocalDateTime): String {
     val year = dt.year.toString().padStart(4, '0')
-    val month = dt.monthNumber.toString().padStart(2, '0')
-    val day = dt.dayOfMonth.toString().padStart(2, '0')
+    val month = dt.month.number.toString().padStart(2, '0')
+    val day = dt.day.toString().padStart(2, '0')
     val hour = dt.hour.toString().padStart(2, '0')
     val minute = dt.minute.toString().padStart(2, '0')
     val second = dt.second.toString().padStart(2, '0')

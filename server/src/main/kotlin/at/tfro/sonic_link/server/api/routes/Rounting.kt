@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalTime::class)
+
 package at.tfro.sonic_link.server.api.routes
 
 import at.tfro.sonic_link.core.logger.Logger
@@ -18,10 +20,11 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.koin.ktor.ext.inject
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 import kotlin.uuid.Uuid
 
 fun Application.configureRouting() {
@@ -65,7 +68,8 @@ fun Application.configureRouting() {
 
                 val syncVersion = SyncVersion(
                     version = 1L,
-                    releasedAt = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
+                    releasedAt = Clock.System.now()
+                        .toLocalDateTime(TimeZone.currentSystemDefault()),
                 )
 
                 val artistNirvana = Artist(

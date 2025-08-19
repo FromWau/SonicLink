@@ -1,6 +1,6 @@
 package at.tfro.sonic_link.core.network
 
-import at.tfro.sonic_link.core.logger.Logger
+import at.tfro.sonic_link.core.logger.Log
 import at.tfro.sonic_link.core.logger.t
 import at.tfro.sonic_link.core.logger.tag
 import io.ktor.client.HttpClient
@@ -17,34 +17,31 @@ import io.ktor.client.plugins.logging.Logger as KtorLogger
 object HttpClientFactory {
     fun create(
         engine: HttpClientEngine,
-        appLogger: Logger,
-    ): HttpClient {
-        return HttpClient(engine = engine) {
-            install(ContentNegotiation) {
-                json(Json {
-                    ignoreUnknownKeys = true
-                    isLenient = true
-                })
-            }
+    ): HttpClient = HttpClient(engine = engine) {
+        install(ContentNegotiation) {
+            json(Json {
+                ignoreUnknownKeys = true
+                isLenient = true
+            })
+        }
 
-            install(Logging) {
-                level = LogLevel.ALL
-                logger = object : KtorLogger {
-                    override fun log(message: String) {
-                        appLogger.tag("Ktor").t { message }
-                    }
+        install(Logging) {
+            level = LogLevel.ALL
+            logger = object : KtorLogger {
+                override fun log(message: String) {
+                    Log.tag("Ktor").t { message }
                 }
             }
+        }
 
-            install(HttpTimeout) {
-                requestTimeoutMillis = 15_000
-                connectTimeoutMillis = 15_000
-                socketTimeoutMillis = 15_000
-            }
+        install(HttpTimeout) {
+            requestTimeoutMillis = 15_000
+            connectTimeoutMillis = 15_000
+            socketTimeoutMillis = 15_000
+        }
 
-            defaultRequest {
-                headers.append("Accept", "application/json")
-            }
+        defaultRequest {
+            headers.append("Accept", "application/json")
         }
     }
 }

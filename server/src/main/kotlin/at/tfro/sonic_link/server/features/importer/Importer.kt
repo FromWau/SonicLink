@@ -1,19 +1,18 @@
 package at.tfro.sonic_link.server.features.importer
 
+import at.tfro.sonic_link.core.logger.Log
 import at.tfro.sonic_link.server.ServerSettings
 import at.tfro.sonic_link.server.api.routes.triage.model.Media
-import at.tfro.sonic_link.core.logger.Logger
 import at.tfro.sonic_link.core.logger.i
 import at.tfro.sonic_link.core.logger.tag
 import kotlinx.serialization.Serializable
 import java.io.File
 
 class Importer(
-    private val logger: Logger,
     private val serverSettings: ServerSettings,
 ) {
     companion object {
-        private const val LOG_TAG = "Importer"
+        private const val TAG = "Importer"
     }
 
     fun importAble(): Sequence<TriageMedia> {
@@ -44,7 +43,7 @@ class Importer(
             throw IllegalArgumentException("File does not exist: $file")
         }
 
-        logger.tag(LOG_TAG).i { "Request to import file: $file" }
+        Log.tag(TAG).i { "Request to import file: $file" }
     }
 
     fun exists(media: Media): Boolean {
