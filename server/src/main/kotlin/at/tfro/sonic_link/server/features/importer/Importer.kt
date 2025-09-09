@@ -3,8 +3,6 @@ package at.tfro.sonic_link.server.features.importer
 import at.tfro.sonic_link.core.logger.Log
 import at.tfro.sonic_link.server.ServerSettings
 import at.tfro.sonic_link.server.api.routes.triage.model.Media
-import at.tfro.sonic_link.core.logger.i
-import at.tfro.sonic_link.core.logger.tag
 import kotlinx.serialization.Serializable
 import java.io.File
 

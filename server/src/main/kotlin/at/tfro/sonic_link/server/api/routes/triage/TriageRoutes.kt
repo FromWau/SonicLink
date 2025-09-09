@@ -6,8 +6,6 @@ import at.tfro.sonic_link.server.api.routes.triage.model.PossibleMappings
 import at.tfro.sonic_link.server.api.routes.triage.model.Recording
 import at.tfro.sonic_link.server.features.importer.Importer
 import at.tfro.sonic_link.core.logger.Logger
-import at.tfro.sonic_link.core.logger.tag
-import at.tfro.sonic_link.core.logger.w
 import at.tfro.sonic_link.core.musicbrainz_api.MusicbrainzApi
 import at.tfro.sonic_link.server.api.routes.triage.model.ArtistCredit
 import io.ktor.http.HttpStatusCode

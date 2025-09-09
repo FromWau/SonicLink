@@ -1,8 +1,6 @@
 package at.tfro.sonic_link.core.network
 
 import at.tfro.sonic_link.core.logger.Log
-import at.tfro.sonic_link.core.logger.t
-import at.tfro.sonic_link.core.logger.tag
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.HttpTimeout
