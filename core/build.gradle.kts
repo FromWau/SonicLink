@@ -40,6 +40,8 @@ kotlin {
             implementation(libs.sqlite.bundled)
 
             api(libs.koin.core)
+
+            implementation(libs.kotlinx.io.core)
         }
 
         jvmMain.dependencies {

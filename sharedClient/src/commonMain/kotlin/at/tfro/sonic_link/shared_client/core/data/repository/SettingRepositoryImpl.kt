@@ -1,6 +1,6 @@
 package at.tfro.sonic_link.shared_client.core.data.repository
 
-import at.tfro.sonic_link.shared_client.core.data.database.SettingDao
+import at.tfro.sonic_link.shared_client.core.data.database.setting.SettingDao
 import at.tfro.sonic_link.shared_client.core.data.mapper.toDomain
 import at.tfro.sonic_link.shared_client.core.data.mapper.toSettingEntity
 import at.tfro.sonic_link.shared_client.core.domain.model.Setting

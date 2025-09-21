@@ -2,7 +2,9 @@ package at.tfro.sonic_link.shared_client.di
 
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import at.tfro.sonic_link.core.database.DatabaseFactory
-import at.tfro.sonic_link.shared_client.core.data.database.SettingDatabase
+import at.tfro.sonic_link.shared_client.core.data.database.media.MediaDao
+import at.tfro.sonic_link.shared_client.core.data.database.media.MediaDatabase
+import at.tfro.sonic_link.shared_client.core.data.database.setting.SettingDatabase
 import at.tfro.sonic_link.shared_client.core.data.repository.SettingRepositoryImpl
 import at.tfro.sonic_link.shared_client.core.domain.repository.SettingRepository
 import at.tfro.sonic_link.shared_client.home.presentation.HomeViewModel
@@ -14,6 +16,7 @@ import at.tfro.sonic_link.shared_client.importer.domain.repository.ImporterRepos
 import at.tfro.sonic_link.shared_client.importer.presentation.import_media.ImportMediaViewModel
 import at.tfro.sonic_link.shared_client.importer.presentation.importer_list.ImportListViewModel
 import at.tfro.sonic_link.shared_client.library.presentation.LibraryViewModel
+import at.tfro.sonic_link.shared_client.player.presentation.PlayerViewModel
 import at.tfro.sonic_link.shared_client.settings.presentation.SettingsViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -26,7 +29,6 @@ val sharedModules = module {
     singleOf(::ImporterApiClient)
     singleOf(::ImporterRemoteDataSourceImpl) bind ImporterDataSource::class
     singleOf(::ImporterRepositoryImpl) bind ImporterRepository::class
-
     singleOf(::SettingRepositoryImpl) bind SettingRepository::class
 
     single<SettingDatabase> {
@@ -38,6 +40,16 @@ val sharedModules = module {
             .build()
     }
     single { get<SettingDatabase>().settingDao }
+
+    single<MediaDatabase> {
+        get<DatabaseFactory>().create<MediaDatabase>(dbname = MediaDatabase.DB_NAME)
+            .fallbackToDestructiveMigrationOnDowngrade(true)
+            .fallbackToDestructiveMigration(true)
+            .setDriver(BundledSQLiteDriver())
+            .setQueryCoroutineContext(Dispatchers.IO)
+            .build()
+    }
+    single<MediaDao> { get<MediaDatabase>().mediaDao }
 }
 
 
@@ -47,4 +59,5 @@ val viewModelModules = module {
     viewModelOf(::LibraryViewModel)
     viewModelOf(::HomeViewModel)
     viewModelOf(::SettingsViewModel)
+    viewModelOf(::PlayerViewModel)
 }

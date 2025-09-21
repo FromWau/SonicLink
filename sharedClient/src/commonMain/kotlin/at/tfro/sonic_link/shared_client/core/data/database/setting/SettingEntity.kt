@@ -1,4 +1,4 @@
-package at.tfro.sonic_link.shared_client.core.data.database
+package at.tfro.sonic_link.shared_client.core.data.database.setting
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

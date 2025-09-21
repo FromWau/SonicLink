@@ -2,22 +2,25 @@ package at.tfro.sonic_link.core.database
 
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import at.tfro.sonic_link.core.FileFactory
-import java.io.File
+import at.tfro.sonic_link.core.SystemAppDirectories
+import at.tfro.sonic_link.core.logger.Log
+import kotlinx.io.files.SystemFileSystem
 
+@Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
 actual class DatabaseFactory(
-    val fileFactory: FileFactory,
+    val dirs: SystemAppDirectories,
 ) {
     actual inline fun <reified T : RoomDatabase> create(dbname: String): RoomDatabase.Builder<T> {
-        val appDataDir = File(fileFactory.appDir())
+        val dbFile = dirs.databaseFile(dbname)
 
-        if (!appDataDir.exists()) {
-            appDataDir.mkdirs()
-        }
+        SystemFileSystem.createDirectories(
+            dbFile.parent ?: error("Database file must have a parent directory")
+        )
 
-        val dbFile = File(appDataDir, dbname)
         return Room.databaseBuilder(
-            name = dbFile.absolutePath,
+            name = dbFile.toString().also {
+                Log.tag("zzz").w { "dbFile: ${dbFile.toString()}" }
+            }
         )
     }
 }

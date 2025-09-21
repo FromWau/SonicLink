@@ -2,11 +2,6 @@ package at.tfro.sonic_link.server.api.plugins
 
 import at.tfro.sonic_link.core.di.coreModule
 import at.tfro.sonic_link.core.logger.Log
-import at.tfro.sonic_link.core.logger.d
-import at.tfro.sonic_link.core.logger.e
-import at.tfro.sonic_link.core.logger.i
-import at.tfro.sonic_link.core.logger.tag
-import at.tfro.sonic_link.core.logger.w
 import at.tfro.sonic_link.core.musicbrainz_api.MusicbrainzApi
 import at.tfro.sonic_link.server.features.importer.Importer
 import at.tfro.sonic_link.server.sync.data.SyncRepositoryImpl

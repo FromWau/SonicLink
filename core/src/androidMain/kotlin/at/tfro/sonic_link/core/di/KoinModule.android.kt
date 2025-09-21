@@ -1,5 +1,6 @@
 package at.tfro.sonic_link.core.di
 
+import at.tfro.sonic_link.core.SystemAppDirectories
 import at.tfro.sonic_link.core.database.DatabaseFactory
 import at.tfro.sonic_link.core.network.HttpClientFactory
 import io.ktor.client.HttpClient
@@ -12,5 +13,6 @@ actual val coreModule: Module
     get() = module {
         single<HttpClientEngine> { OkHttp.create() }
         single<HttpClient> { HttpClientFactory.create(get()) }
-        single<DatabaseFactory> { DatabaseFactory(get()) }
+        single<SystemAppDirectories> { SystemAppDirectories(get()) }
+        single<DatabaseFactory> { DatabaseFactory(get(), get()) }
     }

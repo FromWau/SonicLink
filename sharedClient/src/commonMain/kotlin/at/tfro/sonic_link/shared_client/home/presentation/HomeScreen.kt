@@ -32,6 +32,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import at.tfro.sonic_link.shared_client.app.Route
 import at.tfro.sonic_link.shared_client.core.presentation.side_drawer.SideDrawer
 import at.tfro.sonic_link.shared_client.core.presentation.side_drawer.toggle
+import at.tfro.sonic_link.shared_client.player.presentation.PlayerScreenRoot
 import at.tfro.sonic_link.shared_rpc.sync.SyncService
 import at.tfro.sonic_link.shared_rpc.sync.model.SyncVersionRpc
 import io.ktor.client.HttpClient
@@ -116,9 +117,11 @@ fun HomeScreen(
                         )
                     }
                 },
+                modifier = Modifier.weight(1f),
             )
 
 //            SyncRpc()
+            PlayerScreenRoot()
         }
     }
 }

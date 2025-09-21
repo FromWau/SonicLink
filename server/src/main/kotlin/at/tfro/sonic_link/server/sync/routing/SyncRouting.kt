@@ -1,8 +1,6 @@
 package at.tfro.sonic_link.server.sync.routing
 
 import at.tfro.sonic_link.core.logger.Logger
-import at.tfro.sonic_link.core.logger.i
-import at.tfro.sonic_link.core.logger.tag
 import at.tfro.sonic_link.shared_rpc.sync.SyncService
 import io.ktor.server.routing.Route
 import kotlinx.rpc.krpc.ktor.server.rpc

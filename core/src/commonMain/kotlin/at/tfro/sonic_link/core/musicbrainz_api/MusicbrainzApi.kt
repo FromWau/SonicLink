@@ -1,9 +1,6 @@
 package at.tfro.sonic_link.core.musicbrainz_api
 
 import at.tfro.sonic_link.core.logger.Log
-import at.tfro.sonic_link.core.logger.d
-import at.tfro.sonic_link.core.logger.e
-import at.tfro.sonic_link.core.logger.tag
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get

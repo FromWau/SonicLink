@@ -1,9 +1,6 @@
 package at.tfro.sonic_link.shared_client.importer.data.network
 
 import at.tfro.sonic_link.core.logger.Log
-import at.tfro.sonic_link.core.logger.e
-import at.tfro.sonic_link.core.logger.tag
-import at.tfro.sonic_link.core.logger.w
 import at.tfro.sonic_link.core.network.ensureProtocol
 import at.tfro.sonic_link.shared_client.core.domain.repository.SettingRepository
 import at.tfro.sonic_link.shared_client.importer.data.model.PossibleMediaDto

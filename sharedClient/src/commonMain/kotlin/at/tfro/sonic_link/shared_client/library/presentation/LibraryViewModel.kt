@@ -2,8 +2,6 @@ package at.tfro.sonic_link.shared_client.library.presentation
 
 import androidx.lifecycle.ViewModel
 import at.tfro.sonic_link.core.logger.Log
-import at.tfro.sonic_link.core.logger.i
-import at.tfro.sonic_link.core.logger.tag
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 

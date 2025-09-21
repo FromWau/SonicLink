@@ -1,13 +1,15 @@
 package at.tfro.sonic_link.core
 
 import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.io.files.Path
 import platform.Foundation.NSDocumentDirectory
 import platform.Foundation.NSFileManager
 import platform.Foundation.NSUserDomainMask
 
-actual class FileFactory {
+@Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
+actual class SystemAppDirectories {
     @OptIn(ExperimentalForeignApi::class)
-    actual fun appDir(): String {
+    actual fun dataDir(): Path {
         val documentDirectory = NSFileManager.defaultManager.URLForDirectory(
             directory = NSDocumentDirectory,
             inDomain = NSUserDomainMask,
@@ -16,6 +18,9 @@ actual class FileFactory {
             error = null,
         )
 
-        return requireNotNull(documentDirectory?.path)
+        return Path(requireNotNull(documentDirectory?.path))
     }
+
+    actual fun databaseFile(dbname: String): Path =
+        Path(dataDir(), "databases", dbname)
 }

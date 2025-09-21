@@ -3,9 +3,6 @@
 package at.tfro.sonic_link.server.api.routes
 
 import at.tfro.sonic_link.core.logger.Logger
-import at.tfro.sonic_link.core.logger.e
-import at.tfro.sonic_link.core.logger.i
-import at.tfro.sonic_link.core.logger.tag
 import at.tfro.sonic_link.core.musicbrainz_api.MusicbrainzApi
 import at.tfro.sonic_link.server.api.routes.triage.triageRoutes
 import at.tfro.sonic_link.server.sync.domain.model.Album

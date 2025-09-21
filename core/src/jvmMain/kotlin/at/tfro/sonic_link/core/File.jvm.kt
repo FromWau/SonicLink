@@ -1,12 +1,14 @@
 package at.tfro.sonic_link.core
 
+import kotlinx.io.files.Path
 import java.io.File
 
-actual class FileFactory {
-    actual fun appDir(): String {
+@Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
+actual class SystemAppDirectories {
+    actual fun dataDir(): Path {
         val os = System.getProperty("os.name").lowercase()
         val userHome = System.getProperty("user.home")
-        val appDataDirName = "eventportal"
+        val appDataDirName = "sonic_link"
 
         val appDataDir = when {
             os.contains("win") -> File(System.getenv("APPDATA"), appDataDirName)
@@ -14,6 +16,9 @@ actual class FileFactory {
             else -> File("$userHome/.local/share/$appDataDirName")
         }
 
-        return appDataDir.absolutePath
+        return Path(appDataDir.absolutePath)
     }
+
+    actual fun databaseFile(dbname: String): Path =
+        Path(dataDir(), "databases", dbname)
 }

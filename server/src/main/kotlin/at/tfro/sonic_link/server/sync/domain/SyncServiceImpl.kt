@@ -1,8 +1,6 @@
 package at.tfro.sonic_link.server.sync.domain
 
 import at.tfro.sonic_link.core.logger.Log
-import at.tfro.sonic_link.core.logger.i
-import at.tfro.sonic_link.core.logger.tag
 import at.tfro.sonic_link.server.sync.domain.mapper.toDomain
 import at.tfro.sonic_link.server.sync.domain.mapper.toRpc
 import at.tfro.sonic_link.server.sync.domain.repository.SyncRepository

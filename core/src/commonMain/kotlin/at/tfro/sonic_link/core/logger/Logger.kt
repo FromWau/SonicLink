@@ -14,9 +14,9 @@ expect val Log: Logger
 interface Logger {
     fun log(tag: String, logLevel: LogLevel, lazyMessage: () -> String)
     fun log(tag: String, logLevel: LogLevel, throwable: Throwable)
+    fun tag(tag: String): TaggedLogger = TaggedLogger(tag, this)
 }
 
-fun Logger.tag(tag: String): TaggedLogger = TaggedLogger(tag, this)
 fun toLogString(tag: String, logLevel: LogLevel, lazyMessage: () -> String): String {
     val timestamp = kotlin.time.Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
     val formattedDate = formatDateTime(timestamp)
@@ -47,25 +47,22 @@ private fun formatDateTime(dt: LocalDateTime): String {
     return "$year-$month-$day $hour:$minute:$second.$millisecond"
 }
 
-
-fun TaggedLogger.t(msg: () -> String) = this.log(LogLevel.TRACE, msg)
-fun TaggedLogger.d(msg: () -> String) = this.log(LogLevel.DEBUG, msg)
-fun TaggedLogger.i(msg: () -> String) = this.log(LogLevel.INFO, msg)
-fun TaggedLogger.w(msg: () -> String) = this.log(LogLevel.WARN, msg)
-fun TaggedLogger.e(msg: () -> String) = this.log(LogLevel.ERROR, msg)
-fun TaggedLogger.e(throwable: Throwable) = this.log(LogLevel.ERROR, throwable)
-
 enum class LogLevel {
-    TRACE, DEBUG, INFO, WARN, ERROR
+    VERBOSE, DEBUG, INFO, WARN, ERROR
 }
 
 class TaggedLogger(
     private val tag: String,
     private val delegate: Logger,
 ) {
-    fun log(logLevel: LogLevel, lazyMessage: () -> String) =
-        delegate.log(tag, logLevel, lazyMessage)
-
-    fun log(logLevel: LogLevel, throwable: Throwable) =
-        delegate.log(tag, logLevel, throwable)
+    fun v(msg: () -> String) = delegate.log(tag, LogLevel.VERBOSE, msg)
+    fun d(msg: () -> String) = delegate.log(tag, LogLevel.DEBUG, msg)
+    fun i(msg: () -> String) = delegate.log(tag, LogLevel.INFO, msg)
+    fun w(msg: () -> String) = delegate.log(tag, LogLevel.WARN, msg)
+    fun e(msg: () -> String) = delegate.log(tag, LogLevel.ERROR, msg)
+    fun e(throwable: Throwable) = delegate.log(tag, LogLevel.ERROR, throwable)
+    fun e(throwable: Throwable, msg: () -> String) {
+        delegate.log(tag, LogLevel.ERROR, throwable)
+        delegate.log(tag, LogLevel.ERROR, msg)
+    }
 }
