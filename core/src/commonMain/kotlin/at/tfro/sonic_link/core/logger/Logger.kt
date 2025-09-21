@@ -7,6 +7,7 @@ import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.number
 import kotlinx.datetime.toLocalDateTime
+import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 expect val Log: Logger
@@ -18,7 +19,7 @@ interface Logger {
 }
 
 fun toLogString(tag: String, logLevel: LogLevel, lazyMessage: () -> String): String {
-    val timestamp = kotlin.time.Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+    val timestamp = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
     val formattedDate = formatDateTime(timestamp)
     val level = logLevel.name.padEnd(5) // pad to 5 characters
 
@@ -27,7 +28,7 @@ fun toLogString(tag: String, logLevel: LogLevel, lazyMessage: () -> String): Str
 }
 
 fun toLogString(tag: String, logLevel: LogLevel, throwable: Throwable): String {
-    val timestamp = kotlin.time.Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+    val timestamp = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
     val formattedDate = formatDateTime(timestamp)
     val level = logLevel.name.padEnd(5) // pad to 5 characters
 
