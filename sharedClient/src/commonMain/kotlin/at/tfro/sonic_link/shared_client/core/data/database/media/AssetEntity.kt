@@ -23,7 +23,7 @@ data class AssetEntity(
     @PrimaryKey
     @ColumnInfo(name = "uuid") val uuid: Uuid,
     @ColumnInfo(name = "media_uuid") val mediaUuid: Uuid,
-    @ColumnInfo(name = "path") val path: String,
+    @ColumnInfo(name = "path") val path: Path,
     @ColumnInfo(name = "type") val type: AssetType,
 )
 

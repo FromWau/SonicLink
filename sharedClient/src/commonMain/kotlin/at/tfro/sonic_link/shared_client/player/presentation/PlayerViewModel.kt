@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import at.tfro.sonic_link.core.SystemAppDirectories
 import at.tfro.sonic_link.core.logger.Log
+import at.tfro.sonic_link.core.media.MediaPlayer
 import at.tfro.sonic_link.core.mediaDir
 import at.tfro.sonic_link.shared_client.core.data.database.media.AssetEntity
 import at.tfro.sonic_link.shared_client.core.data.database.media.AssetType
@@ -27,6 +28,7 @@ import kotlin.uuid.Uuid
 class PlayerViewModel(
     private val dirs: SystemAppDirectories,
     private val dao: MediaDao,
+    private val mediaPlayer: MediaPlayer,
 ) : ViewModel() {
     companion object {
         private const val TAG = "PlayerViewModel"
@@ -65,6 +67,11 @@ class PlayerViewModel(
                     _state.update {
                         it.copy(currentModel = Record(mediaWithAssets = next))
                     }
+
+                    mediaPlayer.playAsset(
+                        next.assets.firstOrNull { asset -> asset.type == AssetType.AUDIO }?.path
+                            ?: return@launch
+                    )
                 }
             }
 
@@ -81,6 +88,8 @@ class PlayerViewModel(
                         it
                     }
                 }
+
+                mediaPlayer.skipToPrevious()
             }
 
             PlayerAction.SkipNext -> {
@@ -95,31 +104,44 @@ class PlayerViewModel(
                         it
                     }
                 }
+
+                mediaPlayer.skipToNext()
             }
 
             PlayerAction.TogglePlay -> {
-                _state.update {
-                    it.copy(isPlaying = !it.isPlaying)
+                viewModelScope.launch {
+                    val isPlaying = _state.value.isPlaying
+
+                    _state.update {
+                        it.copy(isPlaying = !isPlaying)
+                    }
+
+                    if (isPlaying) {
+                        mediaPlayer.pause()
+                    } else {
+                        mediaPlayer.play()
+                    }
                 }
+            }
+
+            PlayerAction.ShowQueue -> {
+
             }
         }
     }
 
     @OptIn(ExperimentalTime::class)
     private fun indexMedia() {
-        setupTestData()
-
-        val dir = dirs.mediaDir()
-        SystemFileSystem.createDirectories(path = dir, mustCreate = false)
-
-        Log.tag(TAG).d { "Triggered media indexing at: $dir" }
-
         viewModelScope.launch {
+            setupTestData()
+
+
+            val dir = dirs.mediaDir()
+            SystemFileSystem.createDirectories(path = dir, mustCreate = false)
+
             Log.tag(TAG).d { "Dropping old indexes" }
             dao.deleteAssets()
-        }
 
-        viewModelScope.launch {
             val now = Clock.System.now()
             Log.tag(TAG).d { "Indexing media files..." }
 
@@ -141,7 +163,7 @@ class PlayerViewModel(
                             val asset = AssetEntity(
                                 uuid = Uuid.random(),
                                 mediaUuid = media.uuid,
-                                path = file.toString(),
+                                path = file,
                                 type = AssetType.fromFileExtension(file),
                             )
 
@@ -161,17 +183,12 @@ class PlayerViewModel(
             Log.tag(TAG)
                 .d { "Media indexing completed after ${duration.inWholeMilliseconds}ms." }
 
-            dao.getAllMediaWithAssets().forEach { media ->
-                Log.tag(TAG).d { "Media with assets: ${media.media}" }
-                media.assets.forEach { assetEntity ->
-                    Log.tag(TAG).d { "  Asset: $assetEntity" }
-                }
-            }
+            addAllToQueue()
         }
     }
 
 
-    private fun setupTestData() {
+    private suspend fun setupTestData() {
         val media1 = MediaEntity(
             uuid = Uuid.parseHexDash("00000000-0000-0000-0000-000000000001"),
             title = "Scream Until You Wake",
@@ -186,13 +203,22 @@ class PlayerViewModel(
             album = "Thirteenth Step",
         )
 
-        runBlocking {
-            dao.deleteMedia()
-            dao.insertMedia(media1, media2)
+        dao.deleteMedia()
+        dao.insertMedia(media1, media2)
 
-            dao.getAllMedia().forEach { media ->
-                Log.tag(TAG).d { "Media in DB: $media" }
-            }
+        dao.getAllMedia().forEach { media ->
+            Log.tag(TAG).d { "Media in DB: $media" }
         }
+    }
+
+    private suspend fun addAllToQueue() {
+        Log.tag(TAG).d { "Creating playlist with all media" }
+        val assets: List<AssetEntity> = dao.getAllMediaWithAssets().onEach {
+            Log.tag(TAG).w { "Media for playlist: ${it.media}, assets: ${it.assets}" }
+        }
+            .mapNotNull { it.assets.find { asset -> asset.type == AssetType.AUDIO } }
+
+        Log.tag(TAG).d { "Found ${assets.size} audio assets for playlist" }
+        mediaPlayer.addItemsToQueue(assets.map { it.path })
     }
 }

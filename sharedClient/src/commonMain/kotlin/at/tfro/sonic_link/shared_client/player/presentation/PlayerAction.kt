@@ -9,4 +9,5 @@ sealed interface PlayerAction {
     data object SkipNext : PlayerAction
     data object SkipPrevious : PlayerAction
     data object Random: PlayerAction
+    data object ShowQueue: PlayerAction
 }

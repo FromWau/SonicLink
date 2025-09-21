@@ -4,6 +4,7 @@ import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import at.tfro.sonic_link.core.database.DatabaseFactory
 import at.tfro.sonic_link.shared_client.core.data.database.media.MediaDao
 import at.tfro.sonic_link.shared_client.core.data.database.media.MediaDatabase
+import at.tfro.sonic_link.shared_client.core.data.database.setting.SettingDao
 import at.tfro.sonic_link.shared_client.core.data.database.setting.SettingDatabase
 import at.tfro.sonic_link.shared_client.core.data.repository.SettingRepositoryImpl
 import at.tfro.sonic_link.shared_client.core.domain.repository.SettingRepository
@@ -39,7 +40,7 @@ val sharedModules = module {
             .setQueryCoroutineContext(Dispatchers.IO)
             .build()
     }
-    single { get<SettingDatabase>().settingDao }
+    single<SettingDao> { get<SettingDatabase>().settingDao }
 
     single<MediaDatabase> {
         get<DatabaseFactory>().create<MediaDatabase>(dbname = MediaDatabase.DB_NAME)

@@ -4,6 +4,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
 import androidx.room.TypeConverters
+import at.tfro.sonic_link.core.database.converter.PathConverter
 import at.tfro.sonic_link.core.database.converter.UuidConverter
 import at.tfro.sonic_link.shared_client.core.data.database.converter.AssetTypeConverter
 
@@ -11,7 +12,7 @@ import at.tfro.sonic_link.shared_client.core.data.database.converter.AssetTypeCo
     entities = [MediaEntity::class, AssetEntity::class],
     version = MediaDatabase.DB_VERSION,
 )
-@TypeConverters(UuidConverter::class, AssetTypeConverter::class)
+@TypeConverters(UuidConverter::class, AssetTypeConverter::class, PathConverter::class)
 abstract class MediaDatabase : RoomDatabase() {
     abstract val mediaDao: MediaDao
 
